@@ -1,0 +1,120 @@
+<!-- <% include("../layouts/header.ejs") %>
+
+<h3>Add New users</h3/> -->
+
+    <!-- enctype:if use  its adding our photo in  profile
+     -->
+<!-- 
+<form action="" method="post">
+    <input type="text" name="name" placeholder="Enter Name" required>
+    <br><br>
+    <input type="email" name="email" placeholder="Enter Email" required>
+    <br><br>
+    <input type="text" name="mno" placeholder="Enter Mobile" required>
+    <br><br>
+    <input type="password" name="password" placeholder="Enter password" required>
+    <br><br>
+    <input type="submit" value="register">
+    <br><br>
+
+</form>
+
+<%
+if(typeof message !=='undefined'){
+    %>
+    <p style="color: green;"> <%= message %> </p>
+    <%
+
+}
+%>
+
+<a href="/admin/dashboard">Go Back</a>
+
+
+
+
+
+
+
+<% include("../layouts/footer.ejs") %> -->
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add New Users</title>
+    <!-- Add your CSS link or style here -->
+    <style>
+        /* Basic styling */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            text-align: center;
+        }
+        h3 {
+            margin-top: 50px;
+        }
+        form {
+            margin-top: 20px;
+        }
+        input[type="text"],
+        input[type="email"],
+        input[type="password"],
+        input[type="submit"] {
+            width: 300px;
+            padding: 10px;
+            margin: 10px auto;
+            display: block;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        input[type="submit"] {
+            background-color: #007bff;
+            color: #fff;
+            cursor: pointer;
+        }
+        input[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+        p {
+            color: green;
+            margin-top: 10px;
+        }
+        a {
+            display: block;
+            margin-top: 20px;
+            text-decoration: none;
+            color: #007bff;
+            font-size: 14px;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- <h3>Add New Users</h3> -->
+
+    <form action="" method="post">
+        <input type="text" name="name" placeholder="Enter Name" required>
+        <input type="email" name="email" placeholder="Enter Email" required>
+        <input type="text" name="mno" placeholder="Enter Mobile" required>
+        <input type="password" name="password" placeholder="Enter Password" required>
+        <input type="submit" value="Register">
+    </form>
+
+    <% if(typeof message !== 'undefined'){ %>
+        <p><%= message %></p>
+    <% } %>
+
+    <!-- <a href="/admin/dashboard">Go Back</a> -->
+
+</body>
+</html>

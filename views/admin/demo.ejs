@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Product List</title>
+</head>
+<body>
+
+    <h1>Product List</h1>
+
+    <% if (product && product.length > 0) { %>
+        <% product.forEach(product => { %>
+
+            <h2><%= product.name %></h2>
+            <p><%= product.description %></p>
+
+            <% if (product.promoprice < product.price) { %> 
+                <p>Price: <del><%= product.price %></del> <%= product.promoprice %></p>
+            <% } else { %>
+                <p>Price: <%= product.price %></p>
+            <% } %>
+
+            <h2>Available Sizes and Stock:</h2>
+            <ul>
+                <% product.sizes.forEach(size => { %>
+                    <% if (size.stock > 0) { %> 
+                        <li><%= size.size %>: <%= size.stock %> in stock</li>
+                    <% } %>
+                <% }); %>
+            </ul>
+
+            <% if (product.images && product.images.length > 0) { %>
+                <% product.images.forEach(imageName => { %>
+                    <img src="/uploads/<%= imageName %>" alt="Product Image">
+                <% }); %>
+            <% } else { %>
+                <p>No image available.</p>
+            <% } %>
+
+            <p>Category: <%= category.name %></p> 
+        <% }); %>
+    <% } else { %>
+        <p>No product found.</p>
+    <% } %>
+
+</body>
+</html>

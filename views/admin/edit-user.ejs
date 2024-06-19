@@ -1,0 +1,115 @@
+ <!-- <%include('../layouts/header.ejs')%>
+
+<h2>Edit user</h2>
+
+<%
+
+if(typeof message != "undefined"){
+
+
+    %>
+    <h3><%= message %></h3>
+    <%
+}
+
+%>
+
+
+<form action="" method="post"> -->
+
+<!-- value adding the what is the old name and old user detailas -->
+    <!-- <input type="name" name="name" placeholder="Enter name" value="<%= users.name %>"  required>
+    <br><br>
+    <input type="email" name="email" placeholder="Enter email" value="<%= users.email %>"required>
+    <br><br>
+    <input type="text" name="mno" placeholder="Enter mobile" value="<%= users.mobile %>" required>
+    <br><br>
+    <input type="hidden" name="id" value="<%= users._id %>">
+    <input type="submit" value="update">
+   
+</form> 
+
+
+<a href="/admin/dashboard">Go Dashboard</a> -->
+
+
+
+
+<!-- <%include('../layouts/footer.ejs')%> -->
+ 
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit User</title>
+    <!-- Add your CSS link or style here -->
+    <style>
+        /* Basic styling */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            text-align: center;
+        }
+        h2 {
+            margin-top: 50px;
+        }
+        form {
+            margin-top: 20px;
+        }
+        input[type="name"],
+        input[type="email"],
+        input[type="text"],
+        input[type="submit"] {
+            width: 300px;
+            padding: 10px;
+            margin: 10px auto;
+            display: block;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        input[type="submit"] {
+            background-color: #007bff;
+            color: #fff;
+            cursor: pointer;
+        }
+        input[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+        a {
+            display: block;
+            margin-top: 20px;
+            text-decoration: none;
+            color: #007bff;
+            font-size: 14px;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Edit User</h2>
+
+    <% if(typeof message != "undefined"){ %>
+        <h3><%= message %></h3>
+    <% } %>
+
+    <form action="" method="post">
+        <!-- value adding the what is the old name and old user detailas -->
+        <input type="name" name="name" placeholder="Enter name" value="<%= users.name %>" required>
+        <input type="email" name="email" placeholder="Enter email" value="<%= users.email %>" required>
+        <input type="text" name="mno" placeholder="Enter mobile" value="<%= users.mobile %>" required>
+        <input type="hidden" name="id" value="<%= users._id %>">
+        <input type="submit" value="Update">
+    </form>
+
+    <!-- <a href="/admin/dashboard">Go to Dashboard</a> -->
+
+</body>
+</html>

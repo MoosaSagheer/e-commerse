@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>OTP Verification</title>
+    <link rel="stylesheet" href="/users/assets/css/main.css?v=3.4">
+
+</head>
+<body class="dark">
+   
+    <section class="pt-150 pb-150">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-10 m-auto">
+                    <div class="row">
+                        <div class="col-lg-5">
+                            <div class="login_wrap widget-taber-content p-30 background-white border-radius-10 mb-md-5 mb-lg-0 mb-sm-5">
+                                <div class="padding_eight_all bg-white">
+                                    <h4 class="mb-30">Enter OTP sent to  </h4>
+                                    <h5 class="text-danger"><%= email %></h5>
+                                    <% if (message !== null && message !== undefined) { %> <p><%= message %></p> <% } %>
+                                 <!-- ================================================================================== -->
+                                   
+                                      <!--===================================================================  -->
+    <form action="/verify-otp"  method="post">
+        <div class="form-group">
+        <!-- <input type="hidden" name="email" value="<%= email %>">  -->
+        
+        <input type="text" name="otp" required>
+    </div>
+        <button class="btn btn-fill-out btn-block hover-up" type="submit">Verify</button>
+    </form>
+    <a href="/verify" id="resendOtpLink">Resend OTP</a> 
+
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+</body>
+<script>
+// Get the "Resend OTP" link
+const resendOtpLink = document.getElementById("resendOtpLink");
+
+// Timer variables
+let timeLeft = 30;
+let countdownInterval;
+
+// Function to update the timer display
+function updateTimer() {
+  resendOtpLink.textContent = `Resend OTP (${timeLeft})`;
+  timeLeft--;
+
+  if (timeLeft < 0) {
+    clearInterval(countdownInterval); // Stop the timer
+    resendOtpLink.textContent = "Resend OTP";
+    resendOtpLink.style.pointerEvents = "auto"; // Enable clickability
+
+  } else {
+    // Disable the link/button during the countdown
+    resendOtpLink.style.pointerEvents = "none";
+  }
+}
+
+// Function to start the timer
+function startTimer() {
+  updateTimer();
+  countdownInterval = setInterval(updateTimer, 1000); // Update every second
+}
+
+// Call the startTimer function to initiate the countdown when the page loads
+startTimer();
+
+
+</script>
+</html>

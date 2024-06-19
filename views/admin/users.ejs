@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <style>
+        /* Basic styling */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            text-align: center;
+        }
+        h3 {
+            margin-top: 20px;
+        }
+        table {
+            width: 80%;
+            margin: 20px auto;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        a {
+            text-decoration: none;
+            color: #007bff;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        .edit {
+            color: green;
+        }
+        .delete {
+            color: red;
+        }
+    </style>
+</head>
+<body class="dark">
+<!-- 
+    <h3>Dashboard</h3>
+    <a href="/admin/new-user">Add New users</a> -->
+
+    <table>
+        <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Mobile</th>
+           
+            <th>Action</th>
+        </tr>
+        <% for(let i=0; i < users.length; i++) { %>
+            <tr>
+                <td><%= users[i].name %></td>
+                <td><%= users[i].email %></td>
+                <td><%= users[i].mobile %></td>
+                
+                <td>
+
+                    <% if (users[i].is_blocked) { %>
+                    <form action="/admin/users/unblock?id=<%= users[i]._id%>" method="post">
+
+                        <button id="unblock" class="unblock-button" >Unblock</button>
+                        </form>
+
+                    <% } else { %>
+                        <form action="/admin/users/block?id=<%= users[i]._id%>" method="post">
+                        <button id="block" class="block-button">Block</button>
+                    </form>
+
+                    <% } %>
+
+                    <!-- <a method="p" href="<%= users[i]._id.is_blocked=true %>" class="edit">Block</a> -->
+                    <!-- <a href="/admin/delete-user?id=<%= users[i]._id %>" class="delete">Delete</a> -->
+                </td>
+            </tr>
+        <% } %>
+    </table>
+
+    <!-- <a href="/admin/home">Go to Home</a> -->
+
+</body>
+</html>
