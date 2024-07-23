@@ -4,13 +4,12 @@ const isLogin=async(req,res,next)=>{
     try {
 // console.log(req.session.user_id);
         
-        console.log("is login auth.js",req.session?.user?._id||req.session?.user_id);
-        if(await req.session?.user_id ||  req.session?.user?._id ){
+        if(await req.session?.passport?.user?._id ||  req.session?.user?._id ){
             if( req.session?.user?._id){
                 var userData=await User.findById({_id:req.session.user._id})
               }
-              else if( req.session?.user_id ){
-                  userData=await User.findById({_id:req.session.user_id})
+              else if( req.session?.passport?.user?._id ){
+                  userData=await User.findById({_id:req.session.passport.user._id})
       
               }
             // req.user=await User.findById({_id:req.session.user_id})
@@ -54,7 +53,7 @@ const isLogin=async(req,res,next)=>{
 const isLogout=async(req,res,next)=>{
     try {
     
-        if(req.session.user_id){
+        if(req.session?.user?._id || req.session?.passport?.user?._id){
         res.redirect('/home')
 
 

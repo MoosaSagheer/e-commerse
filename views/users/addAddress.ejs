@@ -38,19 +38,36 @@
                 <div class="heading_s1">
                      <h3 class="mb-30">Enter your shipping address</h3>
                 </div>
-  <form action="">
+  <form action="/profile/address/add" method="post" onsubmit="return validateForm()">
     <label for="name">Name:</label>
-    <input type="text" id="name" required>
-    <label for="mobile">Mobile Number:</label> <input type="tel" id="mobile" required> <label for="country">Country:</label>
-    <input type="text" id="country" required>
+    <input name="name" type="text" id="name" required onfocusout="validateUsersname()">
+    <div id="usersname-error" class="text-danger"></div>
+
+    <label for="mobile">Mobile Number:</label> 
+    <input name="mno" type="tel" id="mobile" required onfocusout="validateMobile()"> 
+    <div id="mobile-error" class="text-danger"></div>
+
+    <label for="country">Country:</label>
+    <input name="country" type="text" id="country" required onfocusout="validateCountry()">
+    <div id="country-error" class="text-danger"></div>
+
     <label for="state">State:</label>
-    <input type="text" id="state" required>
+    <input name="state" type="text" id="state" required onfocusout="validateState()">
+    <div id="state-error" class="text-danger"></div>
+
     <label for="city">City:</label>
-    <input type="text" id="city" required>
-    <label for="street">Street Address:</label> <input type="text" id="street" required>
+    <input name="city" type="text" id="city" required onfocusout="validateCity()">
+    <div id="city-error" class="text-danger"></div>
+
+    <label for="street">Street Address:</label> 
+    <input name="street" type="text" id="street" required onfocusout="validateStreet()">
+    <div id="street-error" class="text-danger"></div>
+
     <label for="pincode">Pincode:</label>
-    <input type="text" id="pincode" required>
-    <button type="submit">Submit Address</button> </form>
+    <input name="pincode" type="text" id="pincode" required onfocusout="validatePincode()">
+    <div id="pincode-error" class="text-danger"></div>
+
+    <button type="submit" name="submit">Submit Address</button> </form>
     </div>
 </div>
 </div>
@@ -59,5 +76,117 @@
 </div>
 </div>
 </section>
+
+<script>
+
+  function validateUsersname(){
+    const usersname = document.getElementById('name').value
+    const errorDiv = document.getElementById('usersname-error')
+
+    if(usersname.length < 3){
+      errorDiv.textContent = 'Usersname must be atleast 3 characters long.';
+      return false;
+    } else {
+      errorDiv.textContent = '';
+      return true;
+    }
+  } 
+
+
+  function validateMobile() {
+            const mobile = document.getElementById('mobile').value;
+            const errorDiv = document.getElementById('mobile-error');
+            const mobilePattern = /^[0-9]{10}$/;
+            if (!mobilePattern.test(mobile)) {
+                errorDiv.textContent = 'Please enter a valid 10-digit mobile number.';
+                return false;
+            } else {
+                errorDiv.textContent = '';
+                return true;
+            }
+        }
+
+  
+  function validateCountry() {
+            const country = document.getElementById('country').value;
+            const errorDiv = document.getElementById('country-error');
+            if(country.length < 2){
+              errorDiv.textContent = 'Please enter your country name'
+              return false;
+            } else {
+              errorDiv.textContent = '';
+              return true;
+            }
+  }
+
+
+  function validateState() {
+    const state = document.getElementById('state').value
+    const errorDiv = document.getElementById('state-error')
+    if(state.length < 3){
+      errorDiv.textContent = 'Please enter your state name'
+      return false;
+    } else {
+      errorDiv.textContent = '';
+      return true;
+    }
+  }
+
+
+  function validateCity() {
+    const city = document.getElementById('city').value
+    const errorDiv = document.getElementById('city-error')
+    if(city.length < 3){
+      errorDiv.textContent = 'Please enter your city name';
+      return false;
+    } else {
+      errorDiv.textContent = '';
+      return true;
+    }
+  }
+
+
+  function validateStreet() {
+    const street = document.getElementById('street').value
+    const errorDiv = document.getElementById('street-error')
+    if(street.length < 3){
+      errorDiv.textContent = 'Please enter street name'
+      return false;
+    } else {
+      errorDiv.textContent = '';
+      return true;
+    }
+  }
+
+
+  function validatePincode() {
+            const pincode = document.getElementById('pincode').value;
+            const errorDiv = document.getElementById('pincode-error');
+            const pincodePattern = /^[0-9]{6}$/;
+            if (!pincodePattern.test(pincode)) {
+                errorDiv.textContent = 'Please enter a valid 6-digit pincode.';
+                return false;
+            } else {
+                errorDiv.textContent = '';
+                return true;
+            }
+        }
+  
+  function validateForm(){
+    console.log("validate form")
+    const isUsersnameValid = validateUsersname();
+    const isMobileValid = validateMobile();
+    const isCountryValid = validateCountry();
+    const isStateValid = validateState();
+    const isCityValid = validateCity();
+    const isStreetValid = validateStreet();
+    const isPincodeValid = validatePincode();
+  console.log("end of validate form");
+
+    return isUsersnameValid && isMobileValid && isCountryValid && isStateValid && isCityValid && isStreetValid && isPincodeValid;
+  }
+
+</script>
+
 </body>
 </html>

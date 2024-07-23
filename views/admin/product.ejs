@@ -51,7 +51,7 @@
                     </div> -->
                 </li>
                 <li class="menu-item">
-                    <a class="menu-link" href="page-orders-1.html"> <i class="icon material-icons md-shopping_cart"></i>
+                    <a class="menu-link" href="/admin/orders"> <i class="icon material-icons md-shopping_cart"></i>
                         <span class="text">Orders</span>
                     </a>
                     <!-- <div class="submenu">
@@ -94,8 +94,8 @@
                     </div> -->
                 </li>
                 <li class="menu-item">
-                    <a class="menu-link" href="#"> <i class="icon material-icons md-person"></i>
-                        <span class="text">Account</span>
+                    <a class="menu-link" href="/admin/category"> <i class="icon material-icons md-person"></i>
+                        <span class="text">Category</span>
                     </a>
                     <!-- <div class="submenu">
                         <a href="page-account-login.html">User login</a>
@@ -104,14 +104,18 @@
                     </div> -->
                 </li>
                 <li class="menu-item">
-                    <a class="menu-link" href="page-reviews.html"> <i class="icon material-icons md-comment"></i>
-                        <span class="text">Reviews</span>
+                    <a class="menu-link" href="/admin/coupon">
+                      <i class="icon material-icons md-stars"></i>
+                      <span class="text">Coupons</span>
                     </a>
-                </li>
-                <li class="menu-item">
-                    <a class="menu-link" href="page-brands.html"> <i class="icon material-icons md-stars"></i>
-                        <span class="text">Brands</span> </a>
-                </li>
+                  </li>
+                  
+                  <li class="menu-item " >
+                    <a class="menu-link" href="/admin/offer" >
+                      <i class="icon material-icons md-comment"></i>
+                      <span class="text">Offers</span>
+                    </a>
+                  </li>
                 <li class="menu-item">
                     <a class="menu-link" disabled href="#"> <i class="icon material-icons md-pie_chart"></i>
                         <span class="text">Statistics</span>
@@ -215,18 +219,22 @@
                                 <% if(typeof message !== "undefined"){ %>
                                     <p><%= message %></p>
                                 <% } %>
-                                <form id="productForm" action="/admin/addproduct" method="post" enctype="multipart/form-data">
+                                <form id="productForm" action="/admin/addproduct" method="post" onsubmit="return validateForm()" enctype="multipart/form-data">
                                     <label for="name"  class="form-label">Product Name:</label>
-                                    <input class="form-control" type="text" id="name" name="name" required>
+                                    <div id="name-error" class="text-danger"></div>
+                                    <input class="form-control" type="text" id="name" name="name" onfocusout="validateProductName()" >
                             
                                     <label for="description" class="form-label">Description:</label>
-                                    <textarea class="form-control" id="description" name="description" required></textarea>
+                                    <div id="description-error" class="text-danger"></div>
+                                    <textarea class="form-control" id="description" name="description" onfocusout="validateDescription()" ></textarea>
                             
                                     <label class="form-label" for="price" class="form-label">Price:</label>
-                                    <input class="form-control" type="number" id="price" name="price" step="0.01" min=1 required>
+                                    <div id="price-error" class="text-danger"></div>
+                                    <input class="form-control" type="number" id="price" name="price" step="0.01" min=1 onfocusout="validatePrice()" >
                             
                                     <label class="form-label" for="promoprice">Promo Price:</label>
-                                    <input class="form-control" type="number" id="promoprice" name="promoprice" step="0.01" min=1 required>
+                                    <div id="promoprice-error" class="text-danger"></div>
+                                    <input class="form-control" type="number" id="promoprice" name="promoprice" step="0.01" min=1 onfocusout="validatePromoPrice()" >
                                     <%   if (categories!==null) {%>
                                     <label class="form-label" for="category">Category:</label>
                                     <select id="category" name="category" required>
@@ -496,8 +504,159 @@
             });
         }
     </script>
+<!-- 
+    <script>
+        function validateProductName() {
+    const productName = document.getElementById('name').value.trim();
+    const errorDiv = document.getElementById('name-error');
+
+    if (productName.length === 0) {
+        errorDiv.textContent = 'Please enter product name';
+        return false;
+    } else {
+        errorDiv.textContent = '';
+        return true;
+    }
+}
+
+function validateDescription() {
+    const description = document.getElementById('description').value;
+    const errorDiv = document.getElementById('description-error');
+
+    if (description.length === 0) {
+        errorDiv.textContent = 'Please enter the description of the product.';
+        return false;
+    } else {
+        errorDiv.textContent = '';
+        return true;
+    }
+}
+
+function validatePrice() {
+    const price = document.getElementById('price').value;
+    const errorDiv = document.getElementById('price-error');
+
+    if (price.length === 0) {
+        errorDiv.textContent = 'Please enter the price.';
+        return false;
+    } else if (price < 1) {
+        errorDiv.textContent = 'Price must be a positive value.';
+        return false;
+    } else {
+        errorDiv.textContent = '';
+        return true;
+    }
+}
+
+function validatePromoPrice() {
+    const promoPrice = document.getElementById('promoprice').value;
+    const price = document.getElementById('price').value;
+    const errorDiv = document.getElementById('promoprice-error');
+
+    if (promoPrice.length === 0) {
+        errorDiv.textContent = 'Please enter the promo price.';
+        return false;
+    } else if (promoPrice < 1) {
+        errorDiv.textContent = 'Promo price must be a positive value.';
+        return false;
+    } else if (Number(promoPrice) > Number(price)) {
+        errorDiv.textContent = 'Promo price should be less than or equal to price.';
+        return false;
+    } else {
+        errorDiv.textContent = '';
+        return true;
+    }
+}
+
+function validateForm() {
+    const isProductNameValid = validateProductName();
+    const isDescriptionValid = validateDescription();
+    const isPriceValid = validatePrice();
+    const isPromoPriceValid = validatePromoPrice();
+
+    // Add validation for other fields here
+
+    return isProductNameValid && isDescriptionValid && isPriceValid && isPromoPriceValid;
+}
+
+    </script> -->
+
+    <script>
+        function validateProductName(){
+            const productname = document.getElementById('name').value.trim()
+            const errorDiv = document.getElementById('name-error')
+
+            if(productname.length === 0){
+                errorDiv.textContent = 'Please enter product name';
+                return false;
+            } else {
+                errorDiv.textContent = '';
+                return true;
+            }
+        }
+
+        function validateDescription(){
+            const description = document.getElementById('description').value
+            const errorDiv = document.getElementById('description-error')
+
+            if(description.length == ''){
+                errorDiv.textContent = 'Please enter the description of the product.';
+                return false;
+            } else {
+                errorDiv.textContent = '';
+                return true;
+            }
+        }
+
+        function validatePrice(){
+            const price = document.getElementById('price').value
+            const errorDiv = document.getElementById('price-error')
+
+            if(price.length == ''){
+                errorDiv.textContent = 'Please enter the price.';
+                return false;
+            } else if(price < 1){
+                errorDiv.textContent = 'Price must be positive value.'
+                return false;
+            
+            } else {
+                errorDiv.textContent = '';
+                return true;
+            }
+        }
 
 
+        function validatePromoPrice(){
+            const promoprice = document.getElementById('promoprice').value
+            const price = document.getElementById('price').value
+            const errorDiv = document.getElementById('promoprice-error')
+
+
+            if(promoprice.length == ''){
+                errorDiv.textContent = 'Please enter the promo-price.';
+                return false;
+            } else if(promoprice < 1){
+                errorDiv.textContent = 'Amount must be positive value.'
+                return false;
+            } else if(Number(promoprice) > Number(price)){
+                errorDiv.textContent = 'Promoprice should be less than or equal to price.'
+                return false;
+            } else {
+                errorDiv.textContent = '';
+                return true;
+            }
+        }
+
+        function validateForm(){
+            const isProductnameValid = validateProductName();
+            const isDescriptionValid = validateDescription();
+            const isPriceValid = validatePrice();
+            const isPromoPriceValid = validatePrice();
+            
+            
+            return isProductnameValid && isDescriptionValid && isPromoPriceValid && isPriceValid;
+        }
+    </script>
     <script src="/admin/assets/js/vendors/jquery-3.6.0.min.js"></script>
     <script src="/admin/assets/js/vendors/bootstrap.bundle.min.js"></script>
     <script src="/admin/assets/js/vendors/select2.min.js"></script>

@@ -49,7 +49,7 @@
                     </div> -->
                 </li>
                 <li class="menu-item">
-                    <a class="menu-link" href="page-orders-1.html"> <i class="icon material-icons md-shopping_cart"></i>
+                    <a class="menu-link" href="/admin/orders"> <i class="icon material-icons md-shopping_cart"></i>
                         <span class="text">Orders</span>
                     </a>
                     <!-- <div class="submenu">
@@ -91,9 +91,9 @@
                         <a href="page-transactions-details.html">Transaction Details</a>
                     </div> -->
                 </li>
-                <li class="menu-item has-submenu">
-                    <a class="menu-link" href="#"> <i class="icon material-icons md-person"></i>
-                        <span class="text">Account</span>
+                <li class="menu-item ">
+                    <a class="menu-link" href="/admin/category"> <i class="icon material-icons md-person"></i>
+                        <span class="text">Category</span>
                     </a>
                     <!-- <div class="submenu">
                         <a href="page-account-login.html">User login</a>
@@ -102,14 +102,18 @@
                     </div> -->
                 </li>
                 <li class="menu-item">
-                    <a class="menu-link" href="page-reviews.html"> <i class="icon material-icons md-comment"></i>
-                        <span class="text">Reviews</span>
+                    <a class="menu-link" href="/admin/coupon">
+                      <i class="icon material-icons md-stars"></i>
+                      <span class="text">Coupons</span>
                     </a>
-                </li>
-                <li class="menu-item">
-                    <a class="menu-link" href="page-brands.html"> <i class="icon material-icons md-stars"></i>
-                        <span class="text">Brands</span> </a>
-                </li>
+                  </li>
+                  
+                  <li class="menu-item " >
+                    <a class="menu-link" href="/admin/offer" >
+                      <i class="icon material-icons md-comment"></i>
+                      <span class="text">Offers</span>
+                    </a>
+                  </li>
                 <li class="menu-item">
                     <a class="menu-link" disabled href="#"> <i class="icon material-icons md-pie_chart"></i>
                         <span class="text">Statistics</span>
@@ -141,10 +145,10 @@
         <header class="main-header navbar">
             <div class="col-search">
                 <form class="searchform">
-                    <div class="input-group">
+                    <!-- <div class="input-group">
                         <input list="search_terms" type="text" class="form-control" placeholder="Search term">
                         <button class="btn btn-light bg" type="button"> <i class="material-icons md-search"></i></button>
-                    </div>
+                    </div> -->
                     <!-- <datalist id="search_terms">
                         <option value="Products">
                         <option value="New orders">
@@ -195,17 +199,22 @@
         <section class="content-main">
             <div class="content-header">
                 <h2 class="content-title">Users list</h2>
-                <div>
+                <!-- <div>
                     <a href="#" class="btn btn-primary"><i class="material-icons md-plus"></i> Create new</a>
-                </div>
+                </div> -->
             </div>
             <div class="card mb-4">
                 <header class="card-header">
                     <div class="row gx-3">
                         <div class="col-lg-4 col-md-6 me-auto">
-                            <input type="text" placeholder="Search..." class="form-control">
+                        <div class="search-style-3">
+                            <form action="#">
+                                    <input id="search" name="search" type="text" placeholder="Search..." class="form-control" >
+                            </form>
                         </div>
-                        <div class="col-lg-2 col-md-3 col-6">
+                    </div>
+
+                        <!-- <div class="col-lg-2 col-md-3 col-6">
                             <select class="form-select">
                                 <option>Status</option>
                                 <option>Active</option>
@@ -219,7 +228,7 @@
                                 <option>Show 30</option>
                                 <option>Show 40</option>
                             </select>
-                        </div>
+                        </div> -->
                     </div>
                 </header> <!-- card-header end// -->
                 <div class="card-body">

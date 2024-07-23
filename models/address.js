@@ -42,5 +42,5 @@ const addressSchema= new mongoose.Schema({
     }]
 })
 
-
-module.exports=mongoose.model('address',addressSchema)
+const collection = mongoose.model('address',addressSchema)
+module.exports= collection

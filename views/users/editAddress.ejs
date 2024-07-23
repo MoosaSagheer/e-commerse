@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tato - eCommerce Website</title>
+  <link rel="shortcut icon" type="image/x-icon" href="/users/assets/imgs/theme/favicon.svg">
+    <!-- Template CSS -->
+    <link rel="stylesheet" href="/users/assets/css/main.css?v=3.4">
+  <style>
+    /* Add some basic styling for better presentation */
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem; /* Add some spacing between form elements */
+    }
+    label {
+      display: block; /* Make labels appear on separate lines */
+      margin-bottom: 5px; /* Add some space below labels */
+    }
+    input {
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      width: 100%; /* Make inputs fill available space */
+    }
+  </style>
+</head>
+<body>
+    <section class="pt-150 pb-150">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-10 m-auto">
+                    <div class="row align-items-center justify-content-center">
+    <div class="col-lg-6">
+        <div class="login_wrap widget-taber-content p-30 background-white border-radius-5">
+            <div class="padding_eight_all bg-white">
+                <div class="heading_s1">
+                     <h3 class="mb-30">Edit Shipping Address</h3>
+                </div>
+  <form  method="post" name="addressForm" onsubmit="return validateAddress()">
+    <label for="name">Name:</label>
+    <input name="name" type="text" id="name" value="<%= userAddress.name %>"  required>
+    <div id="name-error" class="text-danger"></div>
+
+    <label for="mobile">Mobile Number:</label> 
+    <input name="mno" type="tel" id="mobile" value="<%= userAddress.mobile %>" required> 
+    <div id="mobile-error" class="text-danger"></div>
+
+    <label for="country">Country:</label>
+    <input name="country" type="text" id="country" value="<%= userAddress.country %>" required>
+    <div id="country-error" class="text-danger"></div>
+
+    <label for="state">State:</label>
+    <input name="state" type="text" id="state" value="<%= userAddress.state %>" required>
+    <div id="state-error" class="text-danger"></div>
+
+    <label for="city">City:</label>
+    <input name="city" type="text" id="city" value="<%= userAddress.city %>" required>
+    <div id="city-error" class="text-danger"></div>
+
+    <label for="street">Street Address:</label> 
+    <input name="street" type="text" id="street"  value="<%= userAddress.street %>" required>
+    <div id="street-error" class="text-danger"></div>
+
+    <label for="pincode">Pincode:</label>
+    <input name="pincode" type="text" id="pincode" value="<%= userAddress.pincode %>" required>
+    <div id="pincode-error" class="text-danger"></div>
+
+    <button type="submit">Update Address</button>
+    <p class="mb-50 font-sm">
+        <% if(typeof msg != "undefined"){ %>
+            <p class="text-danger"><%= msg %></p>
+        <% } %>
+    </p>
+
+ </form>
+    </div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+
+<script>
+
+            const name=document.getElementById('name').addEventListener('input',validateAddress)
+            const country=document.getElementById('country').addEventListener('input',validateAddress)
+            const street=document.getElementById('street').addEventListener('input',validateAddress)
+            const city=document.getElementById('city').addEventListener('input',validateAddress)
+            const pincode=document.getElementById('pincode').addEventListener('input',validateAddress)
+            const state=document.getElementById('state').addEventListener('input',validateAddress)
+            const mobile=document.getElementById('mobile').addEventListener('input',validateAddress)
+
+        function validateAddress()
+        {
+            const name=document.getElementById('name').value
+            const country=document.getElementById('country').value
+            const street=document.getElementById('street').value
+            const city=document.getElementById('city').value
+            const pincode=document.getElementById('pincode').value
+            const state=document.getElementById('state').value
+
+            const mobile=document.getElementById('mobile').value
+            var isValid=true
+
+            if(name ==="" )
+            {
+                document.getElementById('name-error').innerHTML="enter the name"
+                isValid=false
+            }else{
+                document.getElementById("name-error").innerHTML=""
+
+            }
+            if(country==="")
+            {
+                document.getElementById('country-error').innerHTML="enter the country"
+                isValid=false
+            }
+            else
+            {
+                document.getElementById("country-error").innerHTML=""
+            }
+            if(street==="")
+            {
+                document.getElementById("street-error").innerHTML="enter the Street"
+                isValid=false
+            }
+            else
+            {
+                document.getElementById('street-error').innerHTML=""
+            }
+            if(city==="")
+            {
+                document.getElementById('city-error').innerHTML="enter the city"
+                isValid=false
+            }
+            else
+            {
+                document.getElementById('city-error').innerHTML=""
+            }
+            if(pincode==="")
+            {
+                document.getElementById('pincode-error').innerHTML="enter pincode"
+                isValid=false
+            }
+            else
+            {
+                document.getElementById('pincode-error').innerHTML=""
+            }
+            if(mobile==="")
+            {
+                document.getElementById('mobile-error').innerHTML="enter the mobile number"
+                isValid=false
+            }
+            else if(mobile.length>10 || mobile.length < 10)
+            {
+                document.getElementById('mobile-error').innerHTML="enter the valid mobile number"
+                isValid=false
+            }
+            else
+            {
+                document.getElementById('mobile-error').innerHTML=""
+            }
+            if(state=="")
+            {
+                document.getElementById('state-error').innerHTML="enter the state"
+                isValid=false
+            }
+            else
+            {
+                document.getElementById('state-error').innerHTML=""
+            }
+
+            return isValid
+
+        }
+</script>
+</body>
+</html>

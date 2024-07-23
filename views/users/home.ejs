@@ -235,26 +235,27 @@
                     <div class="header-right">
                         <div class="search-style-2">
                             <form action="#">
-                                <select class="select-active">
-                                    <option>All Categories</option>
-                                    <option>Women's</option>
-                                    <option>Men's</option>
-                                    <option>Cellphones</option>
-                                    <option>Computer</option>
-                                    <option>Electronics</option>
-                                    <option> Accessories</option>
-                                    <option>Home & Garden</option>
-                                    <option>Luggage</option>
-                                    <option>Shoes</option>
-                                    <option>Mother & Kids</option>
-                                </select>
-                                <input type="text" placeholder="Search for items...">
+                                <label for="filter">Filter By:</label>
+                                <select name="filter" class="select active" onchange="this.form.submit();">
+                                    <option value="">Category</option>
+                                    <% categories.forEach(category => { %> 
+                                        <!-- <option value="<%= category._id %>"><%= category.maincatagory %></option> -->
+                                        <option value="<%= category._id %>" <% if (filter == category._id) { %>selected<% } %>>
+                                            <%= category.maincatagory %>
+                                          </option>
+                                    <% }); %>
+
+                                  </select>
+                                  <!-- <button type="submit">Submit</button> -->
+                                
+                                <input type="text" name="search" placeholder="Search for items...">
+                                
                             </form>
                         </div>
                         <div class="header-action-right">
                             <div class="header-action-2">
                                 <div class="header-action-icon-2">
-                                    <a href="shop-wishlist.html">
+                                    <a href="/wishlist">
                                         <img class="svgInject" alt="Tato" src="/users/assets/imgs/theme/icons/icon-heart.svg">
                                         <span class="pro-count blue">4</span>
                                     </a>
@@ -622,9 +623,29 @@
                             </nav>
                         </div>
                     </div>
-                    <div class="hotline d-none d-lg-block">
-                        <p><i class="fi-rs-headset"></i><span>Hotline</span> 1900 - 888 </p>
+
+                    <div class="search-style-3">
+                        <form id="sort" action="#">
+                            <!-- <input type="text" name="search" placeholder="Search for items..."> -->
+                            <!-- <label for="sort">Sort By:</label> -->
+                            <select name="sort" class="select active" onchange="submit()">
+                                <option value="az">A - Z</option>
+                                <!-- <option value="popularity">Popularity</option> -->
+                                <option value="price-asc">Price: low to high</option>
+                                <option value="price-desc">Price: high to low</option>
+                                <!-- <option value="average-ratings">Average ratings</option> -->
+                                <!-- <option value="featured">Featured</option> -->
+                                <option value="new-arrivals">New arrivals</option>
+                                <option value="za">Z - A</option>
+                              </select>
+                              <!-- <button type="submit">Sort</button> -->
+                        </form>
                     </div>
+
+
+                    <!-- <div class="hotline d-none d-lg-block">
+                        <p><i class="fi-rs-headset"></i><span>Hotline</span> 1900 - 888 </p>
+                    </div> -->
                     <p class="mobile-promotion">Happy <span class="text-brand">Mother's Day</span>. Big Sale Up to 40%</p>
                     <div class="header-action-right d-block d-lg-none">
                         <div class="header-action-2">
@@ -990,7 +1011,7 @@
                                         </form>
                                     <!-- <a aria-label="Add To Wishlist" class="action-btn hover-up" href="#"><i class="fi-rs-heart"></i></a> -->
                                     <!-- <a aria-label="Add To Wishlist" class="action-btn hover-up addToWishlistButton" href="#"><i class="fi-rs-heart"></i></a> -->
-                                    <a aria-label="Add To Wishlist" class="action-btn hover-up addToWishlistButton" data-product-id="<%= product._id%>"><i class="fi-rs-heart"></i></a>
+                                    <a aria-label="Add To Wishlist" class="action-btn hover-up addToWishlistButton" href="/wishlist/add/?id=<%= product._id%>" data-product-id="<%= product._id%>"><i class="fi-rs-heart"></i></a>
 
 
                                     <a aria-label="Compare" class="action-btn hover-up" href="shop-compare.html"><i class="fi-rs-shuffle"></i></a>
@@ -1009,10 +1030,20 @@
                                         <span>90%</span>
                                     </span>
                                 </div>
-                                <div class="product-price">
-                                    <span>₹<%= product.promoprice %> </span>
+                                <!-- <div class="product-price">
+                                    <!-- <span>₹<%= product.promoprice %> </span> --
+                                     
                                     <span class="old-price">₹<%= product.price %></span>
+                                </div> -->
+                                <div class="product-price">
+                                    <span>₹<%= product.discountedPrice %></span>
+                                    <% if (product.discountedPrice < product.price) { %>
+                                    <span class="old-price">₹<%= product.price %></span>
+                                    <% } else { %>
+                                    <span>₹<%= product.promoprice %></span>
+                                    <% } %>
                                 </div>
+                                <!-- ============= -->
                                 <div class="product-action-1 show">
                                    <!-- Inside the loop -->
 <form action="/product/addToCart?id=<%= product.id %>" id="myForm<%= product._id %>" class="product-form" method="post">
@@ -2319,6 +2350,68 @@
                 </div>
             </div>
         </section> --> 
+
+        <!-- <div class="pagination-area mt-50 mb-50">
+            <nav aria-label="Page navigation example">
+                <ul class="pagination justify-content-center">
+                    <%if(totalPages  > 1){%>
+                    <% for(let i=1;i < totalPages+1;i++) {%>
+                        <li class="page-item <%= page == i ? 'active' : '' %>"><a class="page-link" href="/home?page=<%= i %>"><%= i %></a></li>
+                        <% } %>
+                        <%}%>
+                </ul>
+
+            </nav>
+
+        </div> -->
+
+        <div style="margin-left: 600px;" class="pagination-area mt-30 mb-50">
+            <nav aria-label="Page navigation example">
+              <ul class="pagination justify-content-start">
+                <% if (page > 1) { %>
+                  <li class="page-item">
+                    <a class="page-link" href="/home?page=<%= page - 1 %>&sort=<%=sortOption%>&filter=<%=filter%>&search=<%=search%>">
+                      <i class="material-icons md-chevron_left"></i>
+                    </a>
+                  </li>
+                <% } %>
+          
+                <% for (let i = 1; i <= totalPages; i++) { %>
+                  <%
+                    <!-- // Calculate the starting and ending page numbers for the visible page range -->
+                    const startIndex = Math.max(Math.min(page - 2, totalPages - 4), 1);
+                    const endIndex = Math.min(Math.max(page + 2, 4), totalPages);
+                  %>
+          
+                  <% if (i >= startIndex && i <= endIndex) { %>
+                    <li class="page-item <%= page == i ? 'active' : '' %>">
+                      <a class="page-link" href="/home?page=<%= i %>&sort=<%=sortOption%>&filter=<%=filter%>&search=<%=search%>"><%= i %></a>
+                    </li>
+                  <% } else if (i === 1 && page > 3) { %>  <li class="page-item">
+                      <a class="page-link" href="/home?page=1&sort=<%=sortOption%>">
+                        <i class="material-icons md-fast_rewind"></i>
+                      </a>
+                    </li>
+                  <% } else if (i === totalPages && page < totalPages - 2) { %>  <li class="page-item">
+                      <a class="page-link" href="/home?page=<%= totalPages %>&sort=<%=sortOption%>&filter=<%=filter%>&search=<%=search%>">
+                        <i class="material-icons md-fast_forward"></i>
+                      </a>
+                    </li>
+                  <% } %>
+                <% } %>
+          
+                <% if (page < totalPages) { %>
+                  <li class="page-item">
+                    <a class="page-link" href="/home?page=<%= page + 1 %>&sort=<%=sortOption%>&filter=<%=filter%>&search=<%=search%>">
+                      <i class="material-icons md-chevron_right"></i>
+                    </a>
+                  </li>
+                <% } %>
+              </ul>
+            </nav>
+          </div>
+
+
     </main>
     <footer class="main">
         <section class="newsletter p-30 text-white wow fadeIn animated">
@@ -2448,6 +2541,11 @@
         </div>
     </div>
     <!-- Vendor JS-->
+     <script>
+        function submit(){
+            const form= document.getElementById('')
+        }
+     </script>
     <script src="/users/assets/js/vendor/modernizr-3.6.0.min.js"></script>
     <script src="/users/assets/js/vendor/jquery-3.6.0.min.js"></script>
     <script src="/users/assets/js/vendor/jquery-migrate-3.3.0.min.js"></script>

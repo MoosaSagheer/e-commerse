@@ -5814,7 +5814,7 @@ h6.post-title {
 }
 
 .search-style-2 form {
-  width: 100%;
+  width: 80%;
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -5823,7 +5823,7 @@ h6.post-title {
 
 .search-style-2 form select {
   color: #1a1a1a;
-  font-size: 16px;
+  font-size: 12px;
   font-weight: 700;
   min-height: 45px;
   border: 1px solid #e2e9e1;
@@ -5933,7 +5933,7 @@ h6.post-title {
 }
 
 .search-style-3 form button {
-  position: absolute;
+  position: relative;
   top: 50%;
   -webkit-transform: translateY(-50%);
   transform: translateY(-50%);
@@ -5942,8 +5942,11 @@ h6.post-title {
   font-size: 15px;
   height: 100%;
   padding: 0 14px;
-  background-color: transparent;
-  color: #333;
+  /* background-color: transparent; */
+  background-color: #088178;
+
+  color: #fff;
+  margin-top: 20px;
 }
 
 .search-style-3 form button:hover {

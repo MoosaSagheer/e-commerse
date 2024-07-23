@@ -92,7 +92,7 @@
                                         </li>
                                         <li><a href="shop-filter.html">Shop – Filter</a></li>
                                         <li><a href="shop-wishlist.html">Shop – Wishlist</a></li>
-                                        <li><a href="shop-cart.html">Shop – Cart</a></li>
+                                        <li><a href="/product/cart">Shop – Cart</a></li>
                                         <li><a href="shop-checkout.html">Shop – Checkout</a></li>
                                         <li><a href="shop-compare.html">Shop – Compare</a></li>
                                     </ul>
@@ -214,7 +214,7 @@
                                 </a>
                             </div>
                             <div class="header-action-icon-2">
-                                <a class="mini-cart-icon" href="shop-cart.html">
+                                <a class="mini-cart-icon" href="/product/cart">
                                     <img alt="Tato" src="/users/assets/imgs/theme/icons/icon-cart.svg">
                                     <span class="pro-count blue">2</span>
                                 </a>
@@ -250,7 +250,7 @@
                                             <h4>Total <span>$4000.00</span></h4>
                                         </div>
                                         <div class="shopping-cart-button">
-                                            <a href="shop-cart.html">View cart</a>
+                                            <a href="/product/cart">View cart</a>
                                             <a href="shop-checkout.html">Checkout</a>
                                         </div>
                                     </div>
@@ -335,7 +335,7 @@
                                     </li>
                                     <li><a href="shop-filter.html">Shop – Filter</a></li>
                                     <li><a href="shop-wishlist.html">Shop – Wishlist</a></li>
-                                    <li><a href="shop-cart.html">Shop – Cart</a></li>
+                                    <li><a href="/product/cart">Shop – Cart</a></li>
                                     <li><a href="shop-checkout.html">Shop – Checkout</a></li>
                                     <li><a href="shop-compare.html">Shop – Compare</a></li>
                                 </ul>
@@ -483,24 +483,31 @@
                                         <div class="heading_s1">
                                             <h3 class="mb-30">Create an Account</h3>
                                         </div>
-                                        <form method="post" id="signupForm">
+                                        <form method="post" id="signupForm" onsubmit="return handleSubmit(event)">
                                             <div class="form-group">
-                                                <input type="text" required="" name="name" placeholder="Username">
+                                                <input id="name" type="text" required="" name="name" placeholder="Username">
+                                                <div class="text-danger" id="nameError"></div>
+                                                
                                             </div>
                                             <div class="form-group">
-                                                <input type="text" required="" name="email" placeholder="Email">
+                                                <input id="email" type="text" required="" name="email" placeholder="Email" >
+                                                <div class="text-danger" id="emailError"></div>
                                             </div>
                                             <div class="form-group">
-                                                <input type="text" required="" name="mno" placeholder="Mobile">
+                                                <input id="mno" type="text" required="" name="mno" placeholder="Mobile">
+                                                <div class="text-danger" id="mnoError"></div>
+                                                
                                             </div>
                                             <div class="form-group">
                                                 <input required id="spassword" type="password" name="password" placeholder="Password" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,15}$"
                                                 title="Must contain at least one lowercase letter, one uppercase letter, one digit, and one special character, and be 8-15 characters long.">
+                                                <div class="text-danger" id="spasswordError"></div>
+                                                
                                             </div>
                                             <div class="form-group">
                                                 <input required id="cpassword" type="password" name="cpassword" placeholder="Confirm password" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,15}$"
                                                 title="Must contain at least one lowercase letter, one uppercase letter, one digit, and one special character, and be 8-15 characters long.">
-                                                <div id="cpasswordError"></div>
+                                                <div id="cpasswordError" class="text-danger"></div>
                                             </div>
                                             <!-- <div class="login_footer form-group">
                                                 <div class="chek-form">
@@ -677,6 +684,113 @@ form.addEventListener("submit", (event) => {
         confirmPasswordError.textContent = ""; // Clear error if passwords match
     }
 });
+
+
+// from submit and validation
+async function handleSubmit(event) {
+    event.preventDefault(); // Prevent default form submission
+ 
+
+const name = document.getElementById("name").value; 
+const email = document.getElementById("email").value; 
+const mno = document.getElementById('mno').value;   
+const spassword = document.getElementById("spassword").value; 
+const cpassword = document.getElementById("cpassword").value;
+
+function validateEmail() {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  if (emailRegex.test(email)) {
+    emailError.textContent = '';
+    return true; // Valid email
+  } else {
+    emailError.textContent = 'Invalid email format';
+    return false; // Invalid email
+  }
+}
+const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,15}$/
+  // Basic validation
+  if (name.trim() === '') {
+    nameError.textContent = 'Please enter your name';
+
+    // alert('Please enter your name');
+    return false;
+  }else{
+    nameError.textContent = ''
+  }
+
+  // Email validation (using the provided function)
+  if (!validateEmail()) {
+    return false;
+  }
+
+  // Mobile number validation (basic check)
+  if (!/^\d{10}$/.test(mno)) {
+    mnoError.textContent = 'Please enter a valid 10-digit mobile number';
+
+    // alert('Please enter a valid 10-digit mobile number');
+    return false;
+  }else{
+    mnoError.textContent = ''
+  }
+
+  // Password validation
+  if(!passwordRegex.test(spassword)){
+    spasswordError.textContent = 'Must contain at least one lowercase letter, one uppercase letter, one digit, and one special character, and be 8-15 characters long.';
+    return false
+  }else{
+    spasswordError.textContent = ''
+  }
+  if (spassword !== cpassword) {
+    cpasswordError.textContent = 'Passwords do not match';
+    return false;
+  }
+const formData={
+    name: name,
+    email: email,
+    mno: mno,
+    password: spassword,
+    cpassword: cpassword
+    }
+//   const formData = new FormData(signupForm);
+
+//   // Validate confirm password (client-side)
+//   if (formData.get('password') !== formData.get('cpassword')) {
+//     cpasswordError.textContent = 'Passwords do not match';
+//     return;
+//   } else {
+//     cpasswordError.textContent = '';
+//   }
+ 
+  try {
+    console.log(formData,"form data");
+    const response = await fetch('/register', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json' 
+      },
+      body: JSON.stringify(formData)
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      console.log(data,data.success,"data");
+      if (data.success) {
+        // Signup successful, handle accordingly (e.g., redirect)
+        // alert(data.message);
+        window.location.href = '/verify';  // redirect to login
+      } else {
+        // Display error message from server
+        document.getElementById('emailError').textContent = "Email/mobile already exist please try againg using different email/mobile";
+      }
+    } else {
+      throw new Error(`Server error: ${response.status}`);
+    }
+  } catch (error) {
+    console.error("Error submitting form:", error);
+  }
+}
+
       </script>
     <script src="/users/assets/js/vendor/modernizr-3.6.0.min.js"></script>
     <script src="/users/assets/js/vendor/jquery-3.6.0.min.js"></script>

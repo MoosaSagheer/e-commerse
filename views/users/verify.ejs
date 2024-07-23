@@ -45,7 +45,7 @@
 const resendOtpLink = document.getElementById("resendOtpLink");
 
 // Timer variables
-let timeLeft = 30;
+let timeLeft = localStorage.getItem('timer')?parseInt(localStorage.getItem('timer')) : 60;
 let countdownInterval;
 
 // Function to update the timer display
@@ -57,9 +57,10 @@ function updateTimer() {
     clearInterval(countdownInterval); // Stop the timer
     resendOtpLink.textContent = "Resend OTP";
     resendOtpLink.style.pointerEvents = "auto"; // Enable clickability
-
+    localStorage.removeItem('timer')
   } else {
     // Disable the link/button during the countdown
+    localStorage.setItem('timer',timeLeft);
     resendOtpLink.style.pointerEvents = "none";
   }
 }
@@ -70,9 +71,14 @@ function startTimer() {
   countdownInterval = setInterval(updateTimer, 1000); // Update every second
 }
 
+if(!localStorage.getItem('timer')){
 // Call the startTimer function to initiate the countdown when the page loads
 startTimer();
-
+}
+else{
+updateTimer();
+countdownInterval = setInterval(updateTimer,1000);
+}
 
 </script>
 </html>
