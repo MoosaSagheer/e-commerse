@@ -42,23 +42,6 @@ user_route.use(express.json());
 
 user_route.get('/register',auth.isLogout,user_Controller.loadRegister)
 user_route.post('/register', user_Controller.insertUser,user_Controller.verify,user_Controller.verified)
-// ... Other imports
-
-// Route for sending OTP (e.g., after registration)
-// user_route.post('/send-otp', async (req, res) => {
-//     const userEmail = req.session.user.email;
-//     console.log(userEmail+"send otp post");
-//     const storedOTP = auth.generateOTP();
-
-//     // Store the OTP in your database (hashed for security) with the associated user
-
-//     try {
-//         await sendOTPVerificationEmail(userEmail, storedOTP);
-//         res.json({ message: 'OTP sent successfully' });
-//     } catch (error) {
-//         res.status(500).json({ error: 'Error sending OTP' }); 
-//     }
-// });
 // route verify
 user_route.get('/verify',user_Controller.verify,user_Controller.verified)
 
@@ -73,6 +56,8 @@ user_route.get('/home',auth.isLogin,user_Controller.loadHome)
 user_route.post('/home', user_Controller.insertUser,user_Controller.verifyLogin)
 user_route.get('/logout',auth.isLogin,user_Controller.userLogout)
 user_route.get('/contact',auth.isLogin,user_Controller.contactLoad)
+
+
 user_route.post("/product/addToCart",auth.isLogin,cartController.AddtoCart)
 user_route.get("/product/cart",auth.isLogin,cartController.loadShopCart)
 user_route.delete('/product/cart/remove',auth.isLogin,cartController.removeCartProduct)
