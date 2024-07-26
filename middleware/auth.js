@@ -2,7 +2,7 @@ const User=require('../models/usermodel')
 
 const isLogin=async(req,res,next)=>{
     try {
-// console.log(req.session.user_id);
+console.log(req.session);
         
         if(await req.session?.passport?.user?._id ||  req.session?.user?._id ){
             if( req.session?.user?._id){

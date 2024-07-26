@@ -33,6 +33,20 @@ const orderSchema = new mongoose.Schema({
       required: true
     }
   }],
+  coupon:{
+    code:{
+      type: String,
+      default : ''
+    },
+    discount:{
+      type: Number,
+      default : 0
+    }
+  },
+  wallet:{
+    type: Number,
+    default : 0
+  },
   totalAmount: {
     type: Number,
   },

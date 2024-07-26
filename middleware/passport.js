@@ -1,5 +1,7 @@
 const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
+const crypto = require('crypto');
+
 const User = require('../models/usermodel'); // Your Mongoose User model
 require('dotenv').config(); 
 
@@ -44,39 +46,32 @@ passport.use(new GoogleStrategy({
 
     if (existingUser) {
         console.log("existing user");
-        session.user={
-            _id:existingUser._id,   
-            email:existingUser.email,
-            isBlocked:existingUser.is_blocked,
-            username:existingUser.name,
-            is_admin:existingUser.is_admin,
-            is_verified:existingUser.is_verified
-        }
-        console.log(session.user.isBlocked);
+           
         return done(null, existingUser);
+        
     } 
+    const generateReferralCode = (uname) => {
+        const randomString = crypto.randomBytes(3).toString('hex').toUpperCase();
+        return `${uname.substring(0, 3).toUpperCase()}${randomString}`;
+    };
 
-    // Create a new user
+    const referalCode=generateReferralCode(profile.emails[0].value)
+    
+    // Create a new user 
     const newUser = new User({
-        _id: profile.id,
         name: profile.displayName,
         email: profile.emails[0].value ,
         password:123,
         mobile:"",
         is_verified:1,
-        is_admin:0
+        is_admin:0,
+        referalCode:referalCode
+
     });
     
-
+    
     await newUser.save(); 
-    session.user={
-        _id:newUser._id,   
-        email:newUser.email,
-        isBlocked:false,
-        username:newUser.name,
-        is_admin:newUser.is_admin,
-        is_verified:newUser.is_verified
-    }
+    
     console.log(newUser);
     done(null, newUser); 
 }));

@@ -1046,14 +1046,12 @@
                                 <!-- ============= -->
                                 <div class="product-action-1 show">
                                    <!-- Inside the loop -->
-<form action="/product/addToCart?id=<%= product.id %>" id="myForm<%= product._id %>" class="product-form" method="post">
-<input type="hidden" name="qty" value="1">
-<input type="hidden" name="size" value="xs">
-</form>
-<a aria-label="Add To Cart" id="submitBtn_<%= product._id %>" class="action-btn hover-up submit-btn" href="#"><i class="fi-rs-shopping-bag-add"></i></a>
-<!-- End of loop -->
-
-                                
+                                    <form action="/product/addToCart?id=<%= product.id %>" id="myForm<%= product._id %>" class="product-form" method="post">
+                                    <input type="hidden" name="qty" value="1">
+                                    <input type="hidden" name="size" value="xs">
+                                    </form>
+                                    <a aria-label="Add To Cart" id="submitBtn_<%= product._id %>" class="action-btn hover-up submit-btn" href="#"><i class="fi-rs-shopping-bag-add"></i></a>
+                                    <!-- End of loop -->
                                 </div>
                             </div>
                         </div>

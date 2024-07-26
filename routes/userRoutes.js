@@ -30,7 +30,8 @@ user_route.set('views','./views/users')
 const user_Controller=require('../controllers/userController')
 const cartController=require('../controllers/cartController')
 const orderController=require('../controllers/orderController.js')
-const wishlistController = require('../controllers/wishlistController.js')
+const wishlistController = require('../controllers/wishlistController.js');
+const User = require('../models/usermodel.js');
 
 
 // Middleware to parse URL-encoded bodies (for form data)
@@ -67,7 +68,7 @@ user_route.post('/verify-otp',user_Controller.verified)
 
 user_route.get('/',auth.isLogout,auth.setNoCacheHeaders,user_Controller.loginLoad)
 user_route.post('/', user_Controller.insertUser,user_Controller.verifyLogin)
-user_route.get('/login',auth.isLogout, user_Controller.login) 
+user_route.get('/login',auth.isLogout,auth.setNoCacheHeaders, user_Controller.login) 
 user_route.post('/login', user_Controller.insertUser,user_Controller.verifyLogin)
 user_route.get('/home',auth.isLogin,user_Controller.loadHome)
 user_route.post('/home', user_Controller.insertUser,user_Controller.verifyLogin)
@@ -116,9 +117,18 @@ user_route.get('/auth/google', passport.authenticate('google', { scope: ['profil
 // Google OAuth callback
 user_route.get('/auth/google/callback', 
     passport.authenticate('google', { failureRedirect: '/login' }), // Redirect to login on failure
-    (req, res) => {
+    async (req, res) => {
         //  On successful login
-        req.session.user_id= req.user.id; 
+        const existingUser = await User.findById(req.user.id)
+        // req.session.user._id= req.user.id; 
+        req.session.user={
+            _id:existingUser._id,   
+            email:existingUser.email,
+            isBlocked:existingUser.is_blocked,
+            username:existingUser.name,
+            is_admin:existingUser.is_admin,
+            is_verified:existingUser.is_verified
+        }
         res.redirect('/home'); 
     }
 );

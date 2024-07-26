@@ -58,12 +58,13 @@ const auth=require('../middleware/adminAuth')
 const adminController=require('../controllers/adminController')
 const offerController=require('../controllers/offerController')
 const formidable = require('formidable')
+const { setNoCacheHeaders } = require('../middleware/auth')
 
 
 // isLogout = ith logout cheythale keran pattuka ollu
 // adminController.loadLogin=  adminController enna middileware le  loadLogin 
 // middleware assing cheyyunnu
-admin_route.get('/',auth.isLogout,adminController.loadLogin)
+admin_route.get('/',auth.isLogout,setNoCacheHeaders,adminController.loadLogin)
 
 
 // admin page

@@ -27,6 +27,20 @@ const cartSchema=new mongoose.Schema({
             required:true
         }
     }],
+    coupon:{
+        code:{
+          type: String,
+          default : ''
+        },
+        discount:{
+          type: Number,
+          default : 0
+        }
+      },
+      wallet:{
+        type: Number,
+        default : 0
+      },
     total:{
         type:Number
     }

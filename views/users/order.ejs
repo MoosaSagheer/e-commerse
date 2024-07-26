@@ -1693,7 +1693,7 @@
         const useWalletCheckbox = document.getElementById("useWallet");
 
         if (useWalletCheckbox.checked) {
-            data={walletBalance:walletBalance}
+            data={walletBalance:totalAmount}
           let  updated = await  fetch('/wallet/update',{
             method:'put',
             headers:{
@@ -1964,7 +1964,13 @@
                     })
         //   alert(Coupon ${couponCode} applied successfully!);
         } else {
-          alert(result.message);
+            Swal.fire({
+                        title: 'Ooops!',
+                        text: `Coupon ${couponCode} ${result.message} !`,
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    })
+        //   alert(result.message);
         }
       } catch (error) {
         alert('There was a problem with the coupon validation.');

@@ -275,6 +275,7 @@ const cod= async(req,res)=>{
             price: product.price,
             })),
             shippingAddress:req.body.address,
+            'payment_method.method':'COD',
             totalAmount: cart.total,
             
         });
@@ -329,15 +330,14 @@ const cancel=async (req, res) => {
 
         if (!updatedOrder) {
             return res.status(404).json({ error: 'Order not found' });
-        }
-
-        // Perform cancellation logic here
-        // For example:
-        // 1. Find the order by ID.
-        // 2. Update the order status to "cancelled".
-        // 3. (Optional) Update product inventory if necessary.
-
+        }else{
+            const user = await User.findById(req.session.user._id)
+            user.wallet += updatedOrder.totalAmount
+            const walletUpdated = await user.save()
+        if(walletUpdated){
         res.json({ updated: true }); // Send a success response
+        }
+        }
     } catch (error) {
         console.error('Error cancelling order:', error);
         res.status(500).json({ error: error.message });
@@ -350,7 +350,8 @@ const walletUpdate = async(req,res) =>{
       const walletBalance = req.body.walletBalance
       const userData = await User.findById(req.session.user._id)
       const wallet = userData.wallet
-      const updatedBalance = wallet-walletBalance;
+      const updatedBalance = Math.max(wallet-walletBalance,0);
+
       console.log(wallet,updatedBalance,"============balances================");
       userData.wallet = updatedBalance;
       const saved = await userData.save()
@@ -365,48 +366,29 @@ const walletUpdate = async(req,res) =>{
 
 
   const applyCoupon = async (req,res)=>{
-    //   const { selectedCoupon, orderTotal } = req.body;
-    // console.log(selectedCoupon,orderTotal,"body of apply coupon");
-    //   try {
-    //     const coupon = await Coupon.findOne({ code: selectedCoupon });
     
-    //     if (!coupon || !coupon.isActive) {
-    //       console.log("!coupon || !coupon.isActive");
-    //       return res.status(400).json({ success: false, message: 'Invalid or inactive coupon' });
-    //     }
-    
-    //     else if (coupon.minimumOrderAmount > orderTotal) {
-    //       console.log("coupon.minimumOrderAmount > orderTotal");
-    //       return res.status(400).json({ success: false, message: 'Minimum order amount not met' });
-    //     }
-    
-    //     else if (coupon.endDate < Date.now()) {
-    //       console.log("coupon.endDate < Date.now()");
-    //       return res.status(400).json({ success: false, message: 'Coupon has expired' });
-    //     }
-    
-    //     // Handle successful coupon application (update order, calculate discount, etc.)
-    //     // ... your logic to apply coupon ...
-    //  else{
-    //   console.log("apply coupon successs ");
-    //     res.status(200).json({ success: true });
-    //  }
     try{
       const { couponCode } = req.body;
       const list = await Cart.findOne({userId:req.session.user._id}); // Example list object with total amount
       const coupons = await Coupon.find({})
       const coupon = coupons.find(c => c.code === couponCode);
-    
-      if (coupon && coupon.isActive && coupon.minimumOrderAmount <= list.total && new Date(coupon.endDate) >= new Date()) {
+      console.log(coupon,'coupon exist');
+      const used = coupon.usedBy.find(c => c == req.session.user._id)
+      console.log(used,'used coupon');
+      if (coupon && coupon.isActive && coupon.minimumOrderAmount <= list.total && new Date(coupon.endDate) >= new Date() && !used ) {
         let discount;
         if(coupon.discountType== "percentage"){
           discount = coupon.discountValue * (list.total/100)
         }else{
           discount = coupon.discountValue
         } // Example discount value, calculate based on your business logic
-        const newTotal = list.total - discount;
+        coupon.usedBy.push(req.session.user._id)
+        coupon.save()
+        const newTotal = list.total - discount; 
         res.json({ success: true, newTotal });
-      } else {
+      } else if(used) {
+        res.json({ success: false, message: 'already used' });
+      } else{
         res.json({ success: false, message: 'Invalid or expired coupon.' });
       }
       } catch (err) {

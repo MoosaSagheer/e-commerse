@@ -1454,7 +1454,7 @@ try {
     discountValue,
     isActive: isActive === 'on', // Handle checkbox value conversion
     startDate: startDate ? new Date(startDate) : null,
-    endDate: endDate ? new Date(endDate) : null,
+    endDate: endDate ? new Date(endDate) : new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
     minimumOrderAmount,
     description,
     products: productIds,

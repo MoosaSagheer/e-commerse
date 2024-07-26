@@ -484,8 +484,8 @@
         let id=document.getElementById('id').value
         let name=document.getElementById('name').value.trim()
         let description=document.getElementById('description').value
-        let price=document.getElementById('price').value
-        let promoprice=document.getElementById('promoprice').value
+        let price= Number(document.getElementById('price').value)
+        let promoprice=Number( document.getElementById('promoprice').value)
         let category=document.getElementById('category').value
         if(name.length===0){
             alert("Enter valid name")
