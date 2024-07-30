@@ -74,16 +74,16 @@
                        
                     </div> -->
                 </li>
-                <li class="menu-item">
+                <!-- <li class="menu-item">
                     <a class="menu-link" href="#"> <i class="icon material-icons md-monetization_on"></i>
                         <span class="text">Transactions</span>
-                    </a>
+                    </a> -->
                     <!-- <div class="submenu">
                         <a href="page-transactions-1.html">Transaction 1</a>
                         <a href="page-transactions-2.html">Transaction 2</a>
                         <a href="page-transactions-details.html">Transaction Details</a>
                     </div> -->
-                </li>
+                <!-- </li> -->
                 <li class="menu-item">
                     <a class="menu-link" href="/admin/category"> <i class="icon material-icons md-person"></i>
                         <span class="text">Category</span>
@@ -115,10 +115,10 @@
             </ul>
             <hr>
             <ul class="menu-aside">
-                <li class="menu-item ">
+                <!-- <li class="menu-item ">
                     <a class="menu-link" href="#"> <i class="icon material-icons md-settings"></i>
                         <span class="text">Settings</span>
-                    </a>
+                    </a> -->
                     <!-- <div class="submenu">
                         <a href="page-settings-1.html">Setting sample 1</a>
                         <a href="page-settings-2.html">Setting sample 2</a>
@@ -287,9 +287,10 @@
                                 </div>
                             </div>
                         </form>
-
-    <div>
-        <a href="#" class="btn btn-primary" onclick="downloadPDF()"><i class="text-muted material-icons md-post_add"></i>Create report</a>
+    <div><br>
+        <a href="#" class="btn btn-primary" onclick="downloadPDF()"><i class="text-muted material-icons md-post_add"></i>Create pdf report</a>
+        <span style="margin-left: 20px;">        <a href="#" class="btn btn-primary" onclick="downloadExcel()"><i class="text-muted material-icons md-post_add"></i>Create excel report</a>
+        </span>
     </div>
 
     <% if(typeof message != "undefined"){ %>
@@ -439,7 +440,7 @@
                 <div class="col-sm-6">
                     <script>
                     document.write(new Date().getFullYear())
-                    </script> ©, Evara - HTML Ecommerce Template .
+                    </script> ©, Tato - HTML Ecommerce Template .
                 </div>
                 <div class="col-sm-6">
                     <div class="text-sm-end">
@@ -461,6 +462,27 @@
     <script src="/admin/assets/js/custom-chart.js" type="text/javascript"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
+       function downloadExcel() {
+    const startDate = document.querySelector('input[name="startDate"]').value;
+    const endDate = document.querySelector('input[name="endDate"]').value;
+    const predefinedRange = document.querySelector('select[name="predefinedRange"]').value;
+
+    let url = '/admin/download-orders-excel?';
+
+    if (predefinedRange) {
+        url += `predefinedRange=${predefinedRange}`;
+    } else {
+        if (startDate) {
+            url += `startDate=${startDate}`;
+        }
+        if (endDate) {
+            url += `&endDate=${endDate}`;
+        }
+    }
+
+    window.location.href = url;
+}
+    
        function downloadPDF() {
     const startDate = document.querySelector('input[name="startDate"]').value;
     const endDate = document.querySelector('input[name="endDate"]').value;

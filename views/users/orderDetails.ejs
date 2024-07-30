@@ -104,10 +104,14 @@
             </tbody>
           </table>
         </div>
-
+        <h5 class="mt-4">Shipping charge: ₹<%= order.charges %></h5>
         <h3 class="mt-4">Total Amount: ₹<%= order.totalAmount %></h3>
       </div>
       <div class="card-footer text-right">
+        <%if(order.paymentStatus === 'Paid'){%>
+        <a href="/order/invoice?id=<%=order._id%>" class="btn btn-secondary">Invoice</a>
+        <%}%>
+        <span></span>
         <a href="/profile#orders" class="btn btn-primary">Back to Orders</a>
       </div>
     </div>

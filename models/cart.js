@@ -43,9 +43,16 @@ const cartSchema=new mongoose.Schema({
       },
     total:{
         type:Number
-    }
+    },
+    charges:{
+        type: Number,
+      }
     
 })
+cartSchema.pre('save', function (next) {
+    this.charges = this.total > 1000 ? 65 : 0;
+    next();
+  });
 
 const collection= mongoose.model('Cart',cartSchema)
 

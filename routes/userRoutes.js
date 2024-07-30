@@ -43,23 +43,6 @@ user_route.use(express.json());
 
 user_route.get('/register',auth.isLogout,user_Controller.loadRegister)
 user_route.post('/register', user_Controller.insertUser,user_Controller.verify,user_Controller.verified)
-// ... Other imports
-
-// Route for sending OTP (e.g., after registration)
-// user_route.post('/send-otp', async (req, res) => {
-//     const userEmail = req.session.user.email;
-//     console.log(userEmail+"send otp post");
-//     const storedOTP = auth.generateOTP();
-
-//     // Store the OTP in your database (hashed for security) with the associated user
-
-//     try {
-//         await sendOTPVerificationEmail(userEmail, storedOTP);
-//         res.json({ message: 'OTP sent successfully' });
-//     } catch (error) {
-//         res.status(500).json({ error: 'Error sending OTP' }); 
-//     }
-// });
 // route verify
 user_route.get('/verify',user_Controller.verify,user_Controller.verified)
 
@@ -74,6 +57,8 @@ user_route.get('/home',auth.isLogin,user_Controller.loadHome)
 user_route.post('/home', user_Controller.insertUser,user_Controller.verifyLogin)
 user_route.get('/logout',auth.isLogin,user_Controller.userLogout)
 user_route.get('/contact',auth.isLogin,user_Controller.contactLoad)
+
+
 user_route.post("/product/addToCart",auth.isLogin,cartController.AddtoCart)
 user_route.get("/product/cart",auth.isLogin,cartController.loadShopCart)
 user_route.delete('/product/cart/remove',auth.isLogin,cartController.removeCartProduct)
@@ -91,7 +76,12 @@ user_route.post('/profile/referral',auth.isLogin,user_Controller.referral)
 user_route.post('/profile/refer',auth.isLogin,user_Controller.refer)
 
 user_route.post('/order/payment/cod',auth.isLogin,orderController.cod)
+user_route.post('/order/repayment/cod',auth.isLogin,orderController.retryCod)
+user_route.post('/order/repayment/razorpay',auth.isLogin,orderController.retryRazorPay)
 user_route.post('/order/payment/razorpay',auth.isLogin,orderController.RazorPay)
+user_route.get('/payment-failure',auth.isLogin,orderController.paymentFailure)
+user_route.get('/order/retrypayment',auth.isLogin,orderController.retryPayment)
+user_route.get('/order/invoice',auth.isLogin,orderController.loadInvoice)
 user_route.post('/create/orderId',auth.isLogin,orderController.razorpay)
 user_route.post('/api/payment/verify',auth.isLogin,orderController.verifyPayment)
 user_route.put('/wallet/update',auth.isLogin,orderController.walletUpdate)
@@ -137,7 +127,7 @@ user_route.get('/auth/google/callback',
 user_route.get('/edit',auth.isLogin,user_Controller.editLoad)
 user_route.post('/edit',user_Controller.updateProfile)
 // user_route.get('*',function(req,res){
-//     res.redirect('/')
+//     res.redirect('/error')
 // })
 
 

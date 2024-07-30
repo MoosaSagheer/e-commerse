@@ -79,11 +79,15 @@ const orderSchema = new mongoose.Schema({
   updatedAt: {
     type: Date,
     default: Date.now
+  },
+  charges:{
+    type: Number,
   }
 });
 
 orderSchema.pre('save', function (next) {
   this.updatedAt = Date.now();
+  this.charges = this.totalAmount > 1000 ? 65 : 0;
   next();
 });
 

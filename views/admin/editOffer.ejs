@@ -51,7 +51,7 @@ th {
     <div class="screen-overlay"></div>
     <aside class="navbar-aside" id="offcanvas_aside">
       <div class="aside-top">
-        <a href="/admin/home" class="brand-wrap">
+        <a href="index.html" class="brand-wrap">
           <img
             src="/admin/assets/imgs/theme/logo.svg"
             class="logo"
@@ -166,7 +166,7 @@ th {
             </a>
           </li>
         </ul>
-        <hr />
+        <hr>
         <!-- <ul class="menu-aside">
           <li class="menu-item has-submenu">
             <a class="menu-link" href="#">
@@ -185,11 +185,10 @@ th {
             </a>
           </li>
         </ul> -->
-        <br />
-        <br />
+        <br>
+        <br>
       </nav>
     </aside>
-
 <main class="main-wrap">
 
     <div ></div>
@@ -197,54 +196,59 @@ th {
         <div class="row">
             <div class="col-9">
                 <div class="content-header">
-                    <h2 class="content-title">Add New Product Offer</h2>
+                    <h2 class="content-title">Edit Offer</h2>
+                    <div>
+                        <!-- <button class="btn btn-light rounded font-sm mr-5 text-body hover-up">Save to draft</button>
+                         <button class="btn btn-md rounded font-sm hover-up">Publich</button> -->
+                    </div>
                 </div>
             </div>
             <div class="col-lg-9">
                 <div class="card mb-4">
                     <div class="card-header">
-                        <h4>Offer Details</h4>
+                        <h4>Product Details</h4>
                     </div>
                     <div class="card-body">
-                        <form  id="productAdd" action="/admin/offer/product/add" method="post" onsubmit="return validateForm()">
-
-                            <div class="mb-4">
-                                <label  class="form-label">Choose Product</label>
-                                <select id="productSelect" name="product"  onselect="return vlaidate_offerProduct()" class="form-select">
-                                   
-                                    <% if(product) {%>
-                                      <option  value=""> select</option>
-                                      <% product.forEach(product => {%>
-                                    <option value="<%= product._id %>"  > <%= product.name %>  </option>
-                                    <%}) %>
-                                    <%}%>
-                                </select>
-                                <!-- <div id="error-product" class="text-danger"></div> -->
-                                <div id="productError" class="text-danger mt-2" style="display: none;">Please select a product.</div>
-                            </div>
-
-                            </select>
-                            <div class="mb-4">
-                                <label  class="form-label">Offer Name</label>
-                                <input type="text"  name="offerName" id="offerName" oninput="return validate_offerName()"  class="form-control"/>
+                        <% if(offer)   {%>
+                        <form    method="post" action="/admin/offer/edit?offerId=<%= offer._id %>" onsubmit="return validateForm()" >
+                           
                                 
-                                <div id="error-offerName" class="text-danger" ></div>
-
-                            </div>
-                            <div class="mb-4">
-                                <label  class="form-label">Offer Description</label>
-                                <input type="text"  id="description" name="description"  oninput="return validate_offerdescription()"  class="form-control"/>
-                                <div id="error-description" class="text-danger">  </div>
-                            </div>
-                            <div class="mb-4">
-                                <label  class="form-label">Offer Percentage</label>
-                                <input type="text" id="Percentage" name="offerPercentage"  oninput="return vlaidate_offerProduct()"  class="form-control"/>
-                                <div id="error-percentage" class="text-danger"></div>
-                            <div class="mb-4">
-                                <label  class="form-label">Offer Type</label>
-                                <input type="text" value="Product Offer" name="offerType"   class="form-control"  readonly  />
-                            </div>
-                            <button class="btn btn-primary" type="submit">Save</button>
+                                <div class="mb-4">
+                                    <label  class="form-label">Product/Category Name</label> <br>
+                                    
+                                   
+                                        <input type="text" 
+                                        value="<%= offer.product ? offer.product.name : offer.category.name %>" 
+                                        class="form-control" 
+                                        readonly>
+                                    
+                                    
+                                </div>
+    
+                                </select>
+                                <div class="mb-4">
+                                    <label  class="form-label">Offer Name</label>
+                                    <input type="text" id="offerName"   value="<%= offer.offerName %>" oninput=" return validate_offerName()" class="form-control"/>
+                                    <div class="text-danger" id="error-offerName"></div>
+                                </div>
+                                <div class="mb-4">
+                                    <label  class="form-label">Offer Description</label>
+                                    <input type="text"  id="description" name="description" oninput="return validate_offerdescription()" value="<%= offer.offerDescription %>" class="form-control" />
+                                    <div class="text-danger" id="error-description"
+                                    ></div>
+                                </div>
+                                <div class="mb-4">
+                                    <label  class="form-label">Offer Percentage</label>
+                                    <input type="text" id="percentage" value="<%= offer.Discount %>" oninput="return validate_offerpercentage()" name="offerPercentage"   class="form-control"/>
+                                    <div class="text-danger" id="error-percentage" 
+                                    ></div>
+                                </div>
+                                <button class="btn btn-primary" type="submit">Save</button>
+    
+                                <%} else {%>
+    
+                                    <p>no offer</p>
+                                    <%} %>
 
                         </form>
 
@@ -257,88 +261,19 @@ th {
 
 </main>
 
-<div </div>
 
 <script>
-    // function validateForm() {
-    //     var productSelect = document.getElementById("productSelect")
-    //     // var errorDiv = document.getElementById("error");
-    //     var offerName=  document.getElementById('offerName').value
-    //    var description= document.getElementById('description').value
-    //     var Percentage= document.getElementById('Percentage').value
-    //     returntrue
-
-
-
-
-
-    //       if (productSelect.value === "") {
-    //        document.getElementById('error-product').innerHTML="Please Select category ";
-    //         isValid= false;
-    //       } else {
-    //        document.getElementById('error-product').innerHTML=""
-
-            
-    //         isValid= true;
-    //     }
-    //     if(offerName==="")
-    //   {
-    //     document.getElementById('error-offerName').innerHTML="please fill the offerName"
-    //     isValid= false
-    //   }else
-    //   {
-    //     document.getElementById('error-offerName').innerHTML=""
-    //     isValid= true
-    //   }
-    //   if(description==="")
-    //   {
-
-    //     document.getElementById('error-description').innerHTML="please Enter the Decription"
-
-    //    isValid= false
-
-    //   }
-    //   else
-    //   {
-    //     document.getElementById('error-description').innerHTML=""
-
-    //     isValid= true
-    //   }
-    //   if(Percentage==="" )
-    //   {
-    //     document.getElementById('error-percentage').innerHTML="plese enter the percentage"
-    //     isValid= false
-    //   }else if (isNaN(Percentage) ){
-    //     document.getElementById('error-percentage').innerHTML="please eneter the valide percentage"
-    //     isValid= false
-
-
-    //   }
-    //   else
-    //   {
-    //     document.getElementById('error-percentage').innerHTML=""
-    //     isValid= true
-    //   }
-    //   return isValid
-
-
-        
-    // }
-
-    
-    function validateOfferProduct() {
-    const productSelect = document.getElementById('productSelect');
-    const productError = document.getElementById('productError');
-    
-    if (productSelect.value === "") {
-        productError.style.display = 'block';
-        return false;  // Prevent form submission
-    } else {
-        productError.style.display = 'none';
-        return true;  // Allow form submission
-    }
-}
+    //  function validateForm() {
+       
+     
+      
+    //    return validate_offerName()&&validate_offerdescription()&&validate_offerpercentage()
   
+  
+          
+    //    }
+  
+     
        function validate_offerName()
        {
         var offerName=  document.getElementById('offerName').value
@@ -408,19 +343,12 @@ th {
        
      
       
-       return validateOfferProduct()&& validate_offerName()&&validate_offerdescription()&&validate_offerpercentage()
+       return  validate_offerName()&&validate_offerdescription()&&validate_offerpercentage()
   
   
           
        }
   
-
-
-    // document.getElementById("yourFormId").addEventListener("submit", function(event) {
-    //     if (!validateForm()) {
-    //         event.preventDefault();
-    //     }
-    // });
 </script>
 <script src="/admin/assets/js/vendors/jquery-3.6.0.min.js"></script>
 <script src="/admin/assets/js/vendors/bootstrap.bundle.min.js"></script>
@@ -430,7 +358,5 @@ th {
 <!-- Main Script -->
 <script src="/admin/assets/js/main.js" type="text/javascript"></script>
 </body>
-
-
 
 </html>

@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html class="no-js" lang="en">
 
 <head>
@@ -745,7 +745,7 @@
                                       <select name="couponCode">
                                         <option value="">Select Coupon</option>
                                         <% coupons.forEach(coupon => { %>
-                                          <% if (coupon.isActive && coupon.minimumOrderAmount <= list.total && new Date(coupon.endDate) >= new Date()) { %>
+                                          <% if (coupon.isActive && coupon.minimumOrderAmount <= list.totalAmount && new Date(coupon.endDate) >= new Date()) { %>
                                             <option value="<%= coupon.code %>"><%= coupon.code %></option>
                                           <% } %>
                                         <% }) %>
@@ -900,7 +900,7 @@
                                         </tr> -->
                                         <tr>
                                             <th>SubTotal</th>
-                                            <td class="product-subtotal" colspan="2"> ₹<%=list.total%></td>
+                                            <td class="product-subtotal" colspan="2"> ₹<%=list.totalAmount%></td>
                                         </tr>
                                         <tr>
                                             <th>Shipping</th>
@@ -908,7 +908,7 @@
                                         </tr>
                                         <tr>
                                             <th>Total</th>
-                                            <td colspan="2" id class="product-subtotal"><span class="font-xl text-brand fw-900" > ₹ <span id="total_amount"><%= list.total + list.charges %></span></span></td>
+                                            <td colspan="2" id class="product-subtotal"><span class="font-xl text-brand fw-900" > ₹ <span id="total_amount"><%= list.totalAmount + list.charges %></span></span></td>
                                         </tr>
                                         <%}%>
 
@@ -940,7 +940,7 @@
                             </div>
 
 
-                            <input type="hidden" value="<%=list.total%>" id="total_price">
+                            <input type="hidden" value="<%=list.totalAmount%>" id="total_price">
                             <button type="submit" id="place_order">Place Order</button>
                         </div>
                     </div>
@@ -1274,71 +1274,15 @@
           })
         console.log(updated,"updated");
         if(updated.ok){
-            if(totalAmount>1000){
-                Swal.fire({
-                title: 'COD Unavailable!',
-                text: 'COD is only applicable for the order under Rs 20000.',
-                icon:'error',
-                confirmButtonText: 'OK'
-
-            })
-            }else{
-            const response = await fetch('/order/payment/cod', {
+            const response = await fetch('/order/repayment/cod', {
                 method: 'POST',
                 headers: {
                     "Content-Type": "application/json"
                 },
                 body: JSON.stringify({
-                    address: selectedAddress,
                     Paymentmethod: selectedPaymentOption,
-                    cartId: `<%= list._id %>`,
-                    user: '<%= users._id %>',
-                    amount: totalAmount // Send original total amount for COD
-                })
-            });
-        
-    
-            if (response.ok) {
-                // alert('Order placed successfully!');
-                Swal.fire({
-                        title: 'Ordered!',
-                        text: 'Successfully ordered.',
-                        icon: 'success',
-                        confirmButtonText: 'OK'
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            // Optional: Add any additional action after the user clicks OK
-                            console.log('User acknowledged the block');
-                            window.location.href = "/profile"           
-                                     }
-                    });
-            }
-             else {
-                console.error("Order error not successful");
-            }
-        }
-        }
-    }else{
-        if(totalAmount>1000){
-                Swal.fire({
-                title: 'COD Unavailable!',
-                text: 'COD is only applicable for the order under Rs 1000.',
-                icon:'error',
-                confirmButtonText: 'OK'
-
-            })
-            }else{
-            const response = await fetch('/order/payment/cod', {
-                method: 'POST',
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    address: selectedAddress,
-                    Paymentmethod: selectedPaymentOption,
-                    cartId: `<%= list._id %>`,
-                    user: '<%= users._id %>',
-                    amount: totalAmount // Send original total amount for COD
+                    orderId: `<%= list._id %>`,
+                    // Send original total amount for COD
                 })
             });
         
@@ -1420,16 +1364,15 @@
                     // alert('Payment verified successfully!');
                     
                     // ================
-                    let payment= await fetch('/order/payment/razorpay',{
+                    let payment= await fetch('/order/repayment/razorpay',{
                 method:'POST',
                 headers:{
                     "Content-Type":"application/json"
                 },
-                body:JSON.stringify({address:selectedAddress,
+                body:JSON.stringify({
                     Paymentmethod:selectedPaymentOption,
-                    cartId:`<%= list._id %>`,
-                    user:'<%= users._id %>',
-                    amount:totalAmount
+                    orderId:`<%= list._id %>`,
+                    
                 })
             })
             if(payment.ok)
@@ -1489,18 +1432,18 @@
                     // alert('Payment verified successfully!');
                     
                     // ================
-                    let payment= await fetch('/order/payment/razorpay',{
+                    let payment= await fetch('/order/repayment/razorpay',{
                 method:'POST',
                 headers:{
                     "Content-Type":"application/json"
                 },
-                body:JSON.stringify({address:selectedAddress,
+                body:JSON.stringify({
                     Paymentmethod:selectedPaymentOption,
-                    cartId:`<%= list._id %>`,
-                    user:'<%= users._id %>',
-                    amount:totalAmount
+                    orderId:`<%= list._id %>`,
+                    
                 })
             })
+                   
             if(payment.ok)
             {
                 console.log("order successful");
@@ -1541,25 +1484,12 @@
             confirmButtonText: 'OK'
         }).then((result) => {
             if (result.isConfirmed) {
-                console.log("User confirmed the failure alert");
-                console.log(`Sending request to /payment-failure with orderId: ${selectedAddress},${`<%=list._id%>`},${total_price}`);
                 
-                fetch(`/payment-failure?address=${selectedAddress}&cartId=${`<%=list._id%>`}&amount=${total_price}`, {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json' // Specify JSON content type
-                    }
-                }).then((response) => {
-                    if (response.ok) {
-
+                
                         console.log("Payment failure request succeeded");
                         window.location.href = `/profile`;
-                    } else {
-                        console.error("Payment failure request failed with status:", response.status);
-                    }
-                }).catch((error) => {
-                    console.error('Error occurred during fetch:', error);
-                });
+                    
+                
                             }
                         });
             });
