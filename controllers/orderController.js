@@ -287,7 +287,6 @@ const cod= async(req,res)=>{
             wallet:cart.wallet,
             shippingAddress:req.body.address,
             'payment_method.method':'COD',
-            'payment_method.method':'COD',
             totalAmount: cart.total,
             
         });
@@ -356,8 +355,6 @@ const cancel=async (req, res) => {
         res.json({ updated: true }); // Send a success response
         }
         }
-        }
-        }
     } catch (error) {
         console.error('Error cancelling order:', error);
         res.status(500).json({ error: error.message });
@@ -411,7 +408,13 @@ const walletUpdate = async(req,res) =>{
         }else{
           discount = coupon.discountValue
         } // Example discount value, calculate based on your business logic
-        const newTotal = list.total - discount;
+        coupon.usedBy.push(req.session.user._id)
+        // made changes here
+        req.session.coupon=coupon
+        list.coupon={code:coupon.code,discount:discount}
+        await list.save()
+        console.log(list.coupon);
+        const newTotal = list.total - discount; 
         res.json({ success: true, newTotal });
       } else if(used) {
         res.json({ success: false, message: 'already used' });
