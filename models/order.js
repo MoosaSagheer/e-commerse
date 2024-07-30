@@ -33,6 +33,20 @@ const orderSchema = new mongoose.Schema({
       required: true
     }
   }],
+  coupon:{
+    code:{
+      type: String,
+      default : ''
+    },
+    discount:{
+      type: Number,
+      default : 0
+    }
+  },
+  wallet:{
+    type: Number,
+    default : 0
+  },
   totalAmount: {
     type: Number,
   },
@@ -65,11 +79,15 @@ const orderSchema = new mongoose.Schema({
   updatedAt: {
     type: Date,
     default: Date.now
+  },
+  charges:{
+    type: Number,
   }
 });
 
 orderSchema.pre('save', function (next) {
   this.updatedAt = Date.now();
+  this.charges = this.totalAmount > 1000 ? 65 : 0;
   next();
 });
 

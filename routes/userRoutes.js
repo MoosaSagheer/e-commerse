@@ -30,7 +30,8 @@ user_route.set('views','./views/users')
 const user_Controller=require('../controllers/userController')
 const cartController=require('../controllers/cartController')
 const orderController=require('../controllers/orderController.js')
-const wishlistController = require('../controllers/wishlistController.js')
+const wishlistController = require('../controllers/wishlistController.js');
+const User = require('../models/usermodel.js');
 
 
 // Middleware to parse URL-encoded bodies (for form data)
@@ -50,7 +51,7 @@ user_route.post('/verify-otp',user_Controller.verified)
 
 user_route.get('/',auth.isLogout,auth.setNoCacheHeaders,user_Controller.loginLoad)
 user_route.post('/', user_Controller.insertUser,user_Controller.verifyLogin)
-user_route.get('/login',auth.isLogout, user_Controller.login) 
+user_route.get('/login',auth.isLogout,auth.setNoCacheHeaders, user_Controller.login) 
 user_route.post('/login', user_Controller.insertUser,user_Controller.verifyLogin)
 user_route.get('/home',auth.isLogin,user_Controller.loadHome)
 user_route.post('/home', user_Controller.insertUser,user_Controller.verifyLogin)
@@ -75,7 +76,12 @@ user_route.post('/profile/referral',auth.isLogin,user_Controller.referral)
 user_route.post('/profile/refer',auth.isLogin,user_Controller.refer)
 
 user_route.post('/order/payment/cod',auth.isLogin,orderController.cod)
+user_route.post('/order/repayment/cod',auth.isLogin,orderController.retryCod)
+user_route.post('/order/repayment/razorpay',auth.isLogin,orderController.retryRazorPay)
 user_route.post('/order/payment/razorpay',auth.isLogin,orderController.RazorPay)
+user_route.get('/payment-failure',auth.isLogin,orderController.paymentFailure)
+user_route.get('/order/retrypayment',auth.isLogin,orderController.retryPayment)
+user_route.get('/order/invoice',auth.isLogin,orderController.loadInvoice)
 user_route.post('/create/orderId',auth.isLogin,orderController.razorpay)
 user_route.post('/api/payment/verify',auth.isLogin,orderController.verifyPayment)
 user_route.put('/wallet/update',auth.isLogin,orderController.walletUpdate)
@@ -101,9 +107,18 @@ user_route.get('/auth/google', passport.authenticate('google', { scope: ['profil
 // Google OAuth callback
 user_route.get('/auth/google/callback', 
     passport.authenticate('google', { failureRedirect: '/login' }), // Redirect to login on failure
-    (req, res) => {
+    async (req, res) => {
         //  On successful login
-        req.session.user_id= req.user.id; 
+        const existingUser = await User.findById(req.user.id)
+        // req.session.user._id= req.user.id; 
+        req.session.user={
+            _id:existingUser._id,   
+            email:existingUser.email,
+            isBlocked:existingUser.is_blocked,
+            username:existingUser.name,
+            is_admin:existingUser.is_admin,
+            is_verified:existingUser.is_verified
+        }
         res.redirect('/home'); 
     }
 );
@@ -112,7 +127,7 @@ user_route.get('/auth/google/callback',
 user_route.get('/edit',auth.isLogin,user_Controller.editLoad)
 user_route.post('/edit',user_Controller.updateProfile)
 // user_route.get('*',function(req,res){
-//     res.redirect('/')
+//     res.redirect('/error')
 // })
 
 

@@ -1,0 +1,311 @@
+
+<!DOCTYPE HTML>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Tato</title>
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Favicon -->
+    <link rel="shortcut icon" type="image/x-icon" href="/admin/assets/imgs/theme/favicon.svg">
+    <!-- Custom CSS -->
+    <link href="/admin/assets/css/main.css" rel="stylesheet" type="text/css" />
+    <style>
+     body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        h2 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .top-selling, .top-categories {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-bottom: 40px;
+        }
+
+        .product-card, .category-card {
+            margin-bottom: 20px;
+        }
+
+        .card {
+            border: none;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .card img {
+            border-bottom: 1px solid #ddd;
+        }
+
+        .card-body {
+            padding: 15px;
+        }
+
+        .card-title {
+            font-size: 18px;
+            margin: 10px 0;
+        }
+
+        .card-text {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .price {
+            color: #e74c3c;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .count {
+            color: #3498db;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .btn-primary {
+            background-color: #3399cc;
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background-color: #287ba8;
+        }
+
+        .image-container {
+            position: relative;
+            overflow: hidden;
+            border-radius: 8px;
+        }
+
+        .product-image {
+            display: block;
+            width: 100%;
+            height: auto;
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+        }
+
+        .overlay i {
+            color: #fff;
+            font-size: 32px;
+        }
+
+        .image-container:hover .product-image {
+            transform: scale(1.1);
+        }
+
+        .image-container:hover .overlay {
+            opacity: 1;
+        }
+    </style>
+    
+</head>
+
+<body class="dark">
+    <div class="screen-overlay"></div>
+    <aside class="navbar-aside" id="offcanvas_aside">
+        <div class="aside-top">
+            <!-- <a href="#" class="brand-wrap">Tato</a> -->
+            <a href="#"><img src="/admin/assets/imgs/theme/logo.svg" alt="logo"></a>
+
+            <div>
+                <button class="btn btn-icon btn-aside-minimize"><i class="text-muted material-icons md-menu_open"></i></button>
+            </div>
+        </div>
+        <nav>
+            <ul class="menu-aside">
+                <li class="menu-item"><a class="menu-link" href="/admin/home"><i class="icon material-icons md-home"></i><span class="text">Dashboard</span></a></li>
+                <li class="menu-item"><a class="menu-link" href="/admin/productlist"><i class="icon material-icons md-shopping_bag"></i><span class="text">Products</span></a></li>
+                <li class="menu-item"><a class="menu-link" href="/admin/orders"><i class="icon material-icons md-shopping_cart"></i><span class="text">Orders</span></a></li>
+                <li class="menu-item"><a class="menu-link" href="/admin/users"><i class="icon material-icons md-store"></i><span class="text">Users</span></a></li>
+                <li class="menu-item"><a class="menu-link" href="/admin/addproduct"><i class="icon material-icons md-add_box"></i><span class="text">Add product</span></a></li>
+                <li class="menu-item"><a class="menu-link" href="/admin/category"><i class="icon material-icons md-store"></i><span class="text">Categories</span></a></li>
+                <li class="menu-item"><a class="menu-link" href="/admin/coupon"><i class="icon material-icons md-stars"></i><span class="text">Coupons</span></a></li>
+                <li class="menu-item"><a class="menu-link" href="/admin/offer"><i class="icon material-icons md-comment"></i><span class="text">Offers</span></a></li>
+                <li class="menu-item active"><a class="menu-link" href="/admin/statistics"><i class="icon material-icons md-pie_chart"></i><span class="text">Statistics</span></a></li>
+            </ul>
+            <br>
+            <hr>
+        </nav>
+    </aside>
+    <main class="main-wrap">
+        <header class="main-header navbar">
+            <div class="col-search">
+                <form class="searchform">
+                    <!-- <div class="input-group">
+                        <input list="search_terms" type="text" class="form-control" placeholder="Search term">
+                        <button class="btn btn-light bg" type="button"> <i class="material-icons md-search"></i></button>
+                    </div> -->
+                    <datalist id="search_terms">
+                        <option value="Products">
+                        <option value="New orders">
+                        <option value="Apple iphone">
+                        <option value="Ahmed Hassan">
+                    </datalist>
+                </form>
+            </div>
+            <div class="col-nav">
+                <!-- <button class="btn btn-icon btn-mobile me-auto" data-trigger="#offcanvas_aside"> <i class="material-icons md-apps"></i> </button> -->
+                <ul class="nav">
+                    <!-- <li class="nav-item">
+                        <a class="nav-link btn-icon" href="#">
+                            <i class="material-icons md-notifications animation-shake"></i>
+                            <span class="badge rounded-pill">3</span>
+                        </a>
+                    </li> -->
+                    <li class="nav-item">
+                        <a class="nav-link btn-icon darkmode" href="#"> <i class="material-icons md-nights_stay"></i> </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="requestfullscreen nav-link btn-icon"><i class="material-icons md-cast"></i></a>
+                    </li>
+                    <!-- <li class="dropdown nav-item">
+                        <a class="dropdown-toggle" data-bs-toggle="dropdown" href="#" id="dropdownLanguage" aria-expanded="false"><i class="material-icons md-public"></i></a>
+                        <div class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownLanguage">
+                            <a class="dropdown-item text-brand" href="#"><img src=/admin"assets/imgs/theme/flag-us.png" alt="English">English</a>
+                            <a class="dropdown-item" href="#"><img src=/admin"assets/imgs/theme/flag-fr.png" alt="Français">Français</a>
+                            <a class="dropdown-item" href="#"><img src=/admin"assets/imgs/theme/flag-jp.png" alt="Français">日本語</a>
+                            <a class="dropdown-item" href="#"><img src=/admin"assets/imgs/theme/flag-cn.png" alt="Français">中国人</a>
+                        </div>
+                    </li> -->
+                    <!-- <li class="dropdown nav-item">
+                        <a class="dropdown-toggle" data-bs-toggle="dropdown" href="#" id="dropdownAccount" aria-expanded="false"> <img class="img-xs rounded-circle" src=/admin"assets/imgs/people/avatar2.jpg" alt="User"></a>
+                        <div class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownAccount">
+                            <a class="dropdown-item" href="#"><i class="material-icons md-perm_identity"></i>Edit Profile</a>
+                            <a class="dropdown-item" href="#"><i class="material-icons md-settings"></i>Account Settings</a>
+                            <a class="dropdown-item" href="#"><i class="material-icons md-account_balance_wallet"></i>Wallet</a>
+                            <a class="dropdown-item" href="#"><i class="material-icons md-receipt"></i>Billing</a>
+                            <a class="dropdown-item" href="#"><i class="material-icons md-help_outline"></i>Help center</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item text-danger" href="#"><i class="material-icons md-exit_to_app"></i>Logout</a>
+                        </div>
+                    </li> -->
+                </ul>
+            </div>
+        </header>
+        <section class="content-main">
+            <div class="content-header">
+                <!-- <div>
+                    <h2 class="content-title card-title">Products grid</h2>
+                    <p>Lorem ipsum dolor sit amet.</p>
+                </div> -->
+                <!-- <div>
+                    <a href="#" class="btn btn-light rounded font-md">Export</a>
+                    <a href="#" class="btn btn-light rounded  font-md">Import</a>
+                    <a href="#" class="btn btn-primary btn-sm rounded">Create new</a>
+                </div> -->
+            </div>
+            <div class="card mb-4">
+                <header class="card-header">
+                    <div class="row gx-3">
+                        <div class="col-lg-4 col-md-6 me-auto">
+                            <!-- <input type="text" placeholder="Search..." class="form-control"> -->
+                        </div>
+                        <div class="col-lg-2 col-6 col-md-3">
+                            <!-- <select class="form-select">
+                                <option>All category</option>
+                                <option>Electronics</option>
+                                <option>Clothings</option>
+                                <option>Something else</option>
+                            </select> -->
+                        </div>
+                        <div class="col-lg-2 col-6 col-md-3">
+                            <!-- <select class="form-select">
+                                <option>Latest added</option>
+                                <option>Cheap first</option>
+                                <option>Most viewed</option>
+                            </select> -->
+                        </div>
+                    </div>
+                </header> <!-- card-header end// -->
+               
+                <h1>Best Selling Products</h1>
+                <div class="card-body">
+                    <div class="row gx-3 row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-4 row-cols-xxl-5">
+                        <% product.forEach(product => { %>
+                        <div class="col">
+                            <div class="card card-product-grid">
+                                <a href="#" class="image-preview">
+                                    <div class="image-container">
+                                        <img class="product-image" src="/uploads/<%= product.productDetails.images[0] %>" alt="Product">
+                                        <div class="overlay">
+                                            <i class="material-icons md-zoom_in"></i>
+                                        </div>
+                                    </div>
+                                </a>                                <div class="info-wrap">
+                                    <a href="#" class="title text-truncate"><%= product.productDetails.name %></a>
+                                    <div class="price mb-2"> Price:<%= product.productDetails.promoprice %></div>
+                                    <div class="price mb-2"><span class="text-primary" >Revenue: </span> ₹<%= product.totalSales %> </div>
+                                    <div class="mb-2"><%= product.totalQuantity %> Quantity Sold</div>
+                                </div>
+                            </div>
+                        </div>
+                        <% }) %>
+                    </div>
+                </div>
+                    </div> <!-- col.// -->   
+                     
+
+
+                    <section class="card-body">
+                        <h2 class="text-center">Top Selling Categories</h2>
+                        <div class="row" id="top-selling-categories">
+                            <!-- Top selling categories will be dynamically inserted here -->
+                            <% category.forEach(category => { %>
+                            <div class="col-md-3 category-card">
+                                <div class="card card-category-grid">
+                                    <div class="card-body">
+                                        <h5 class="card-title"><%= category.categoryDetails.maincatagory %></h5>
+                                        <p class="card-text"><%= category.categoryDetails.description %></p>
+                                        <div class="count mb-2"><%= category.totalSales %> Revenue</div>
+                                        <div class="count mb-2"><%= category.totalQuantity %> Sold</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <% }) %>
+                        </div>
+                    </section>
+                    </section>
+                 </main>    
+
+    <script src="/admin/assets/js/vendors/jquery-3.6.0.min.js"></script>
+    <script src="/admin/assets/js/vendors/bootstrap.bundle.min.js"></script>
+    <script src="/admin/assets/js/vendors/select2.min.js"></script>
+    <script src="/admin/assets/js/vendors/perfect-scrollbar.js"></script>
+    <script src="/admin/assets/js/vendors/jquery.fullscreen.min.js"></script>
+    <script src="/admin/assets/js/vendors/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="/admin/assets/js/main.js" type="text/javascript"></script>
+    <script src="/admin/assets/js/custom-chart.js" type="text/javascript"></script>
+    
+    
+</body>
+</html>

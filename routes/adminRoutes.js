@@ -74,6 +74,9 @@ admin_route.post('/',adminController.verifyLogin)
 admin_route.get('/home',auth.isLogin,adminController.loadDashboard   )
 admin_route.get('/ordersgraph',auth.isLogin,adminController.getOrdersGraphData)
 admin_route.get('/download-orders-pdf',auth.isLogin,adminController.pdfDownloadOrders)
+admin_route.get('/download-orders-excel',auth.isLogin,adminController.excelDownloadOrders)
+admin_route.get('/statistics',auth.isLogin,adminController.loadStatics)
+
 
 admin_route.get('/addproduct',auth.isLogin,adminController.addproduct)
 admin_route.post('/addproduct',auth.isLogin,upload,adminController.insertproduct)

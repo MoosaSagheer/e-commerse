@@ -171,7 +171,7 @@
                                 <!-- ad.forEach(address=>{ -->
 
                                     <p class="mb-1">
-                                        <%= ad.name %> <br> <%= ad.email %> <br> <%=ad.mobile %>
+                                        <%= order.userId.name %> <br> <%= order.userId.email %> <br> <%=order.userId.mobile %>
                                     </p>
                                     <!-- }) -->
                                     <!-- <a href="#">View profile</a> -->
@@ -186,7 +186,7 @@
                                 <div class="text">
                                     <h6 class="mb-1">Order info</h6>
                                     <p class="mb-1">
-                                        Shipping: Fargo express <br> Pay method: card <br> Status: new
+                                        Shipping: Fargo express <br> Payment method: <%= order.payment_method.method%> <br> Status: new
                                     </p>
                                     <!-- <a href="#">Download info</a> -->
                                 </div>
@@ -259,7 +259,7 @@
                                                     </dl>
                                                     <dl class="dlist">
                                                         <dt>Shipping cost:</dt>
-                                                        <dd>₹0.00</dd>
+                                                        <dd>₹<%= order.charges%></dd>
                                                     </dl>
                                                     <dl class="dlist">
                                                         <dt>Grand total:</dt>
@@ -268,7 +268,7 @@
                                                     <dl class="dlist">
                                                         <dt class="text-muted">Status:</dt>
                                                         <dd>
-                                                            <span class="badge rounded-pill alert-success text-success">Payment done</span>
+                                                            <span class="badge rounded-pill alert-success text-success"><%= order.paymentStatus %></span>
                                                         </dd>
                                                     </dl>
                                                 </article>

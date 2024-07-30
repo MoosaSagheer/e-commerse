@@ -40,7 +40,7 @@ const couponSchema = new mongoose.Schema({
     type: Date,
     validate: { // Custom validation for end date
       validator: function(value) {
-        return value > this.startDate; // End date must be after start date
+        return value >= this.startDate; // End date must be after start date
       },
       message: 'End date must be after start date.'
     }

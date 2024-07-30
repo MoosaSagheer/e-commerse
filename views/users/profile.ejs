@@ -213,15 +213,15 @@
                         </div> -->
                         <div class="header-action-2">
                             <div class="header-action-icon-2">
-                                <a href="shop-wishlist.html">
+                                <a href="/wishlist">
                                     <img class="svgInject" alt="Evara" src="/users/assets/imgs/theme/icons/icon-heart.svg">
-                                    <span class="pro-count blue">4</span>
+                                    <!-- <span class="pro-count blue">4</span> -->
                                 </a>
                             </div>
                             <div class="header-action-icon-2">
                                 <a class="mini-cart-icon" href="/product/cart">
                                     <img alt="Evara" src="/users/assets/imgs/theme/icons/icon-cart.svg">
-                                    <span class="pro-count blue">2</span>
+                                    <!-- <span class="pro-count blue">2</span> -->
                                 </a>
                                 <div class="cart-dropdown-wrap cart-dropdown-hm2">
                                     <ul>
@@ -517,15 +517,21 @@
                                                                             
                                                                             <td><%= new Date(order.createdAt).toLocaleDateString() %></td>
                                                                             <td><%= order.orderStatus %></td>
-                                                                            <td><%= order.products.reduce((total, product) => total + (product.price), 0).toFixed(2) %></td>
+                                                                            <td><%= order.totalAmount.toFixed(2) %></td>
                                                                             <!-- <td><%= order.products[0].price.toFixed(2) %></td> -->
                                                                            
                                                                             <% if (order.orderStatus === 'Processing' || order.orderStatus === 'Pending' || order.orderStatus === 'Shipped') { %>
 
                                                                                
 
-                                                                                <td><button style="background-color: rgb(221, 48, 48);" id="cancelbtn" data-order-id="<%= order._id %>" onclick="confirmOrderCancel('<%=order._id%>')" >Cancel</button></td>
-
+                                                                                <td><button style="background-color: rgb(221, 48, 48);" id="cancelbtn" data-order-id="<%= order._id %>" onclick="confirmOrderCancel('<%=order._id%>')" >Cancel</button>
+                                                                                <br>
+                                                                                <% if (order.paymentStatus ==='Failed' && order.payment_method.method == 'RazorPay'){%>
+                                                                                    <a href="/order/retrypayment?id=<%=order._id%>">
+                                                                                <button style="background-color: rgb(216, 219, 30);" id="retryPayment" data-order-id="<%= order._id %>"  >Retry Payment</button>
+                                                                            </a>
+                                                                                    <%}%>
+                                                                                </td>
                                                                             <%} else if(order.orderStatus === 'Delivered') {%>
 
                                                                                 <td><button style="background-color: rgb(36, 35, 117);" id="returnbtn" data-order-id="<%= order._id %>" onclick="confirmReturn('<%=order._id%>')" >Return</button></td>
@@ -878,7 +884,12 @@
                 }
             });
         });
-
+// ====================================
+async function retryPayment(orderId){
+    
+    fetch(`/order/retrypayment?id=${orderId}`);
+}
+// ====================================
         async function confirmOrderCancel(orderId) {
     const result = await Swal.fire({
         title: 'Are you sure you want to cancel this order?',

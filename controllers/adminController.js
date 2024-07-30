@@ -11,6 +11,8 @@ const Coupon = require('../models/couponModel')
 const PDFDocument = require('pdfkit');
 const sharp=require('sharp')
 const path = require('path')
+const xlsx = require('xlsx');
+
 
 const bcrypt = require("bcrypt");
 
@@ -97,19 +99,19 @@ try {
   
 
   const pastRevenue = await order.aggregate([
-      { $match: { 'date': { $gte: thirtyDaysAgo, $lt: today } } },
+      { $match: { 'createdAt': { $gte: thirtyDaysAgo, $lt: today } } },
       { $unwind: "$products" },
       { $match: { 'createdAt': { $gte: thirtyDaysAgo, $lt: today } } },
       {
           $group: {
               _id: null,
-              totalRevenue: { $sum: { $multiply: ["$products.price", "$products.quantity"] } }
+              totalRevenue: { $sum: "$products.price"  }
           }
       }
   ]);
 
   const pasttotalRevenue = pastRevenue.length > 0 ? pastRevenue[0].totalRevenue : 0;
-  // console.log("Total Revenue in the Last 30 Days:", pasttotalRevenue);
+  console.log("Total Revenue in the Last 30 Days:", pasttotalRevenue,pastRevenue);
 
   const result = await order.aggregate([
       { $unwind: "$products" },
@@ -245,7 +247,7 @@ if (!orders || orders.length === 0) {
 res.render('home', {
   order: [],
   totalProductsCount,
-  totalRevenue: 0, // Set to 0 if no orders found
+  totalRevenue: totalRevenue, // Set to 0 if no orders found
   pasttotalRevenue,
   uniqueProductCount,
   message: 'No orders found for the selected date range',
@@ -364,9 +366,19 @@ const insertCategory = async (req, res, next) => {
     console.log(mainCategory, subCategory, description);
     // 1. Data Validation
     if (!mainCategory || !subCategory || !description) {
+      let page = parseInt(req.query.page) || 1;
+      let limit = 2;
+      var search="";
+      let startIndex = (page-1) * limit;
+      let totalDocuments = await Category.countDocuments();
+  
+      let totalPages = Math.ceil(totalDocuments/limit)
+      let cat= await Category.find({$or: [{maincatagory: {$regex: search, $options: "i"}}]}).skip(startIndex).limit(limit);
+      
       return res
         .status(400)
-        .json({ error: "Required fields missing or invalid" });
+        .render("category",{message: "Required fields missing or invalid",categories:cat,page,totalPages});
+  
     }
 
     // 2. Check for Existing Category (Optional but recommended for uniqueness)
@@ -1034,7 +1046,7 @@ const updateCategory=async (req,res)=>{
     const { mainCategory, subCategory, description } = req.body;
     console.log(mainCategory, subCategory, description);
     const existingCategory = await Category.findOne({
-      maincatagory:mainCategory
+      maincatagory: { $regex: new RegExp(`^${mainCategory}$`, 'i') } // Case-insensitive regex
     });
     console.log(existingCategory,"asdfghjklmnb");
     const Target = await Category.findById(id);
@@ -1078,7 +1090,7 @@ const Loadorder= async (req,res)=>{
   try {
     let ad=[]
     let page = parseInt(req.query.page) || 1;
-    let limit = 2;
+    let limit = 5;
 
     let startIndex = (page-1) * limit;
 
@@ -1087,7 +1099,7 @@ const Loadorder= async (req,res)=>{
     let totalDocuments = await order.countDocuments();
     // console.log(cat,"sdfgbhjm");
     let totalPages = Math.ceil(totalDocuments/limit)
-    const orderData = await order.find({}).skip(startIndex).limit(limit).populate('userId').populate('products.productId')
+    const orderData = await order.find({}).skip(startIndex).limit(limit).populate('userId').populate('products.productId').sort({createdAt:-1})
   //   orderData.forEach(async order=>{
   //   const Address = await address.findOne({ 'address._id': order.shippingAddress });    
   //   Address.address.forEach(address=>{
@@ -1285,8 +1297,8 @@ const getOrdersGraphData = async (req, res) => {
         const labels = orders.map(order => order.date);
         const values = orders.map(order => order.totalOrders);
 
-        console.log("labels: ", labels);  // Debugging log
-        console.log("values: ", values);  // Debugging log
+        console.log("labels: ", labels.length,labels);  // Debugging log
+        console.log("values: ", values.length,values);  // Debugging log
 
 
         
@@ -1297,124 +1309,383 @@ const getOrdersGraphData = async (req, res) => {
   }
 };
 
-
 const pdfDownloadOrders = async (req, res) => {
   try {
-      const { startDate, endDate, predefinedRange } = req.query;
-      let start, end;
+    const { startDate, endDate, predefinedRange } = req.query;
+    let start, end;
 
-      // Determine the date range
-      if (predefinedRange) {
-          switch (predefinedRange) {
-              case 'oneDay':
-                  start = new Date();
-                  start.setDate(start.getDate() - 1);
-                  end = new Date();
-                  break;
-              case 'oneWeek':
-                  start = new Date();
-                  start.setDate(start.getDate() - 7);
-                  end = new Date();
-                  break;
-              case 'oneMonth':
-                  start = new Date();
-                  start.setMonth(start.getMonth() - 1);
-                  end = new Date();
-                  break;
-              case 'oneYear':
-                  start = new Date();
-                  start.setFullYear(start.getFullYear() - 1);
-                  end = new Date();
-                  break;
-              default:
-                  throw new Error('Invalid predefined range');
-          }
-      } else {
-          if (startDate) {
-              start = new Date(startDate);
-          }
-          if (endDate) {
-              end = new Date(endDate);
-          }
+    // Determine the date range
+    if (predefinedRange) {
+      switch (predefinedRange) {
+        case 'oneDay':
+          start = new Date();
+          start.setDate(start.getDate() - 1);
+          end = new Date();
+          break;
+        case 'oneWeek':
+          start = new Date();
+          start.setDate(start.getDate() - 7);
+          end = new Date();
+          break;
+        case 'oneMonth':
+          start = new Date();
+          start.setMonth(start.getMonth() - 1);
+          end = new Date();
+          break;
+        case 'oneYear':
+          start = new Date();
+          start.setFullYear(start.getFullYear() - 1);
+          end = new Date();
+          break;
+        default:
+          throw new Error('Invalid predefined range');
       }
-
-      // Query to fetch orders based on date range
-      const query = {};
-      if (start && end) {
-          query.createdAt = { $gte: start, $lte: end };
+    } else {
+      if (startDate) {
+        start = new Date(startDate);
       }
+      if (endDate) {
+        end = new Date(endDate);
+      }
+    }
 
-      const orders = await order.find(query)
-          .populate('userId')
-          .populate('shippingAddress')
-          .populate('products.productId'); // Populate product details
+    // Query to fetch orders based on date range
+    const query = {};
+    if (start && end) {
+      query.createdAt = { $gte: start, $lte: end };
+    }
 
-      // Create a PDF document
-      const doc = new PDFDocument({ margin: 50 });
-      res.setHeader('Content-Type', 'application/pdf');
-      res.setHeader('Content-Disposition', 'attachment; filename=orders_report.pdf');
+    const orders = await order.find(query)
+      .populate('userId')
+      .populate('shippingAddress')
+      .populate('products.productId'); // Populate product details
 
-      // Pipe the PDF into the response
-      doc.pipe(res);
+    // Calculate total sum
+    const totalSum = orders.reduce((sum, order) => sum + order.totalAmount, 0);
 
-      // Add Header
-      doc.fontSize(20).text('Orders Report', { align: 'center' });
-      doc.fontSize(12).text(`Date: ${new Date().toISOString().split('T')[0]}`, { align: 'center' });
-      doc.moveDown();
+    // Create a PDF document
+    const doc = new PDFDocument({ margin: 50 });
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', 'attachment; filename=orders_report.pdf');
 
-      // Add table header
+    // Pipe the PDF into the response
+    doc.pipe(res);
+
+    // Function to add table headers
+    const addTableHeaders = () => {
       doc.fontSize(10);
       doc.fillColor('#444444');
-      doc.text('Order ID', 50, 100, { bold: true });
-      doc.text('User', 100, 100, { bold: true });
-      doc.text('Date', 200, 100, { bold: true });
-      doc.text('Total Amount', 300, 100, { bold: true });
-      doc.text('Status', 400, 100, { bold: true });
-      doc.text('Products', 500, 100, { bold: true });
-      doc.moveTo(50, 120).lineTo(550, 120).stroke();
-      let y = 130;
+      doc.text('Order ID', 50, y, { bold: true });
+      doc.text('User', 100, y, { bold: true });
+      doc.text('Date', 200, y, { bold: true });
+      doc.text('Total Amount', 300, y, { bold: true });
+      doc.text('Status', 400, y, { bold: true });
+      doc.text('Products', 500, y, { bold: true });
+      doc.moveTo(50, y + 20).lineTo(550, y + 20).stroke();
+      y += 30;
+    };
 
-      // Add orders data
-      orders.forEach(order => {
-          if (y > 750) { // Check for page overflow
-              doc.addPage();
-              y = 50;
-          }
+    // Add Header
+    doc.fontSize(20).text('Orders Report', { align: 'center' });
+    doc.fontSize(12).text(`Date: ${new Date().toISOString().split('T')[0]}`, { align: 'center' });
+    doc.moveDown();
 
-          doc.fillColor('#000000');
-          doc.text(order.orderId, 50, y);
-          doc.text(order.userId.name, 100, y);
-          doc.text(order.createdAt.toISOString().split('T')[0], 200, y);
-          doc.text(`Rs ${order.totalAmount}`, 300, y);
-          doc.text(order.orderStatus, 400, y);
+    // Add initial table headers
+    let y = 130;
+    addTableHeaders();
 
-          // List products
-          let productsText = order.products.map(product => `${product.productId.name} `).join(', ');
-          doc.text(productsText, 500, y, { width: 200 });
+    // Add orders data
+    orders.forEach(order => {
+      if (y > 700) { // Check for page overflow
+        doc.addPage();
+        y = 50;
+        addTableHeaders(); // Add headers on new page
+      }
 
-          y += 20;
+      doc.fillColor('#000000');
+      doc.text(order.orderId, 50, y);
+      doc.text(order.userId.name, 100, y);
+      doc.text(order.createdAt.toISOString().split('T')[0], 200, y);
+      doc.text(`Rs ${order.totalAmount}`, 300, y);
+      doc.text(order.orderStatus, 400, y);
 
-          if (order.shippingAddress) {
-              const address = order.shippingAddress;
-              doc.text(`Address: ${address.name}, ${address.street}, ${address.city}, ${address.state}, ${address.country}`, { indent: 50, width: 500 });
-              doc.text(`Pincode: ${address.pincode}`, { indent: 50, width: 500 });
-              doc.text(`Mobile No: ${address.mobile}`, { indent: 50, width: 500 });
-              y += 40;
-          }
-      });
 
-      // Add Footer
-      doc.moveTo(50, 750).lineTo(550, 750).stroke();
-      doc.fontSize(10).text('Generated by Ecommerce System', 50, 760, { align: 'center' });
+     // List products
+     order.products.forEach(product => {
+      if (y > 700) { // Check for page overflow
+        doc.addPage();
+        y = 50;
+        addTableHeaders(); // Add headers on new page
+      }
+      doc.text(`${product.productId.name} (${product.size},${product.quantity})`, 480, y, { width: 200 });
+      y += 20;
+    });
 
-      // Finalize the PDF and end the stream
-      doc.end();
+      if (order.shippingAddress) {
+        const address = order.shippingAddress;
+        doc.text(`Address: ${address.name}, ${address.street}, ${address.city}, ${address.state}, ${address.country}`, { indent: 50, width: 500 });
+        doc.text(`Pincode: ${address.pincode}`, { indent: 50, width: 500 });
+        doc.text(`Mobile No: ${address.mobile}`, { indent: 50, width: 500 });
+        y += 40;
+      }
+    });
+
+    // Add total sum at the bottom
+    if (y > 700) { // Check for page overflow before adding total
+      doc.addPage();
+      y = 50;
+      addTableHeaders(); // Add headers on new page
+    }
+    doc.moveTo(50, y).lineTo(550, y).stroke();
+    y += 10; // Add some padding
+    doc.fillColor('#000000');
+    doc.fontSize(12).text(`Total Amount: Rs ${totalSum}`, 50, y, { align: 'right' });
+
+    // Add Footer
+    doc.moveTo(50, 750).lineTo(550, 750).stroke();
+    doc.fontSize(10).text('Generated by Ecommerce System', 50, 760, { align: 'center' });
+
+    // Finalize the PDF and end the stream
+    doc.end();
 
   } catch (error) {
-      console.error('Error generating PDF:', error);
-      res.status(500).send('Internal Server Error');
+    console.error('Error generating PDF:', error);
+    res.status(500).send('Internal Server Error');
   }
 };
+
+const excelDownloadOrders = async (req, res) => {
+  try {
+    const { startDate, endDate, predefinedRange } = req.query;
+    let start, end;
+
+    // Determine the date range
+    if (predefinedRange) {
+      switch (predefinedRange) {
+        case 'oneDay':
+          start = new Date();
+          start.setDate(start.getDate() - 1);
+          end = new Date();
+          break;
+        case 'oneWeek':
+          start = new Date();
+          start.setDate(start.getDate() - 7);
+          end = new Date();
+          break;
+        case 'oneMonth':
+          start = new Date();
+          start.setMonth(start.getMonth() - 1);
+          end = new Date();
+          break;
+        case 'oneYear':
+          start = new Date();
+          start.setFullYear(start.getFullYear() - 1);
+          end = new Date();
+          break;
+        default:
+          throw new Error('Invalid predefined range');
+      }
+    } else {
+      if (startDate) {
+        start = new Date(startDate);
+      }
+      if (endDate) {
+        end = new Date(endDate);
+      }
+    }
+
+    // Query to fetch orders based on date range
+    const query = {};
+    if (start && end) {
+      query.createdAt = { $gte: start, $lte: end };
+    }
+
+    const orders = await order.find(query)
+      .populate('userId')
+      .populate('shippingAddress')
+      .populate('products.productId'); // Populate product details
+
+      // Calculate total sum
+    const totalSum = orders.reduce((sum, order) => sum + order.totalAmount, 0);
+
+    // Transform orders data to match Excel format
+    const orderData = orders.map(order => ({
+      'Order ID': order.orderId,
+      'User': order.userId ? order.userId.name : 'N/A',
+      'Order Date': order.createdAt.toISOString().split('T')[0],
+      'Total Amount': `Rs ${order.totalAmount}`,
+      'Status': order.orderStatus,
+      'Products': order.products.map(p => `${p.productId.name} (${p.size} x ${p.quantity})`).join(', '),
+      // 'Shipping Address': order.shippingAddress ? 
+      //   `${order.shippingAddress.name}, ${order.shippingAddress.street}, ${order.shippingAddress.city}, ${order.shippingAddress.state}, ${order.shippingAddress.country}, Pincode: ${order.shippingAddress.pincode}, Mobile: ${order.shippingAddress.mobile}` : 'N/A'
+    }));
+
+    // Add total sum row
+    orderData.push({
+      'Order ID': '',
+      'User': '',
+      'Order Date': '',
+      'Total Amount': `Total: Rs ${totalSum}`,
+      'Status': '',
+      'Products': '',
+      'Shipping Address': ''
+    });
+    // Create Excel workbook and worksheet
+    const workbook = xlsx.utils.book_new();
+    const worksheet = xlsx.utils.json_to_sheet(orderData);
+
+    // Add worksheet to workbook
+    xlsx.utils.book_append_sheet(workbook, worksheet, 'Orders');
+
+    // Adjust column widths based on the longest text in each column
+    const sheet = workbook.Sheets['Orders'];
+    const range = xlsx.utils.decode_range(sheet['!ref']);
+    for (let col = range.s.c; col <= range.e.c; col++) {
+      let maxLength = 0;
+      for (let row = range.s.r; row <= range.e.r; row++) {
+        const cell = sheet[xlsx.utils.encode_cell({ r: row, c: col })];
+        if (cell && cell.v) {
+          const cellLength = cell.v.toString().length;
+          maxLength = Math.max(maxLength, cellLength);
+        }
+      }
+      const colLetter = xlsx.utils.encode_col(col);
+      const colWidth = maxLength * 2 + 10; // Adjust width as needed (2x length + some padding)
+      sheet['!cols'] = sheet['!cols'] || [];
+      sheet['!cols'][col] = { width: colWidth };
+    }
+
+    // Generate Excel file buffer
+    const excelBuffer = xlsx.write(workbook, { bookType: 'xlsx', type: 'buffer' });
+
+    // Set response headers
+    res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    res.setHeader('Content-Disposition', 'attachment; filename=orders_report.xlsx');
+
+    // Send Excel file as response
+    res.send(excelBuffer);
+  } catch (error) {
+    console.error('Error generating Excel file:', error);
+    res.status(500).send('Internal Server Error');
+  }
+};
+// const pdfDownloadOrders = async (req, res) => {
+//   try {
+//       const { startDate, endDate, predefinedRange } = req.query;
+//       let start, end;
+
+//       // Determine the date range
+//       if (predefinedRange) {
+//           switch (predefinedRange) {
+//               case 'oneDay':
+//                   start = new Date();
+//                   start.setDate(start.getDate() - 1);
+//                   end = new Date();
+//                   break;
+//               case 'oneWeek':
+//                   start = new Date();
+//                   start.setDate(start.getDate() - 7);
+//                   end = new Date();
+//                   break;
+//               case 'oneMonth':
+//                   start = new Date();
+//                   start.setMonth(start.getMonth() - 1);
+//                   end = new Date();
+//                   break;
+//               case 'oneYear':
+//                   start = new Date();
+//                   start.setFullYear(start.getFullYear() - 1);
+//                   end = new Date();
+//                   break;
+//               default:
+//                   throw new Error('Invalid predefined range');
+//           }
+//       } else {
+//           if (startDate) {
+//               start = new Date(startDate);
+//           }
+//           if (endDate) {
+//               end = new Date(endDate);
+//           }
+//       }
+
+//       // Query to fetch orders based on date range
+//       const query = {};
+//       if (start && end) {
+//           query.createdAt = { $gte: start, $lte: end };
+//       }
+
+//       const orders = await order.find(query)
+//           .populate('userId')
+//           .populate('shippingAddress')
+//           .populate('products.productId'); // Populate product details
+
+//       // Create a PDF document
+//       const doc = new PDFDocument({ margin: 50 });
+//       res.setHeader('Content-Type', 'application/pdf');
+//       res.setHeader('Content-Disposition', 'attachment; filename=orders_report.pdf');
+
+//       // Pipe the PDF into the response
+//       doc.pipe(res);
+
+//       // Add Header
+//       doc.fontSize(20).text('Orders Report', { align: 'center' });
+//       doc.fontSize(12).text(`Date: ${new Date().toISOString().split('T')[0]}`, { align: 'center' });
+//       doc.moveDown();
+
+//       // Add table header
+//       doc.fontSize(10);
+//       doc.fillColor('#444444');
+//       doc.text('Order ID', 50, 100, { bold: true });
+//       doc.text('User', 100, 100, { bold: true });
+//       doc.text('Date', 200, 100, { bold: true });
+//       doc.text('Total Amount', 300, 100, { bold: true });
+//       doc.text('Status', 400, 100, { bold: true });
+//       doc.text('Products', 500, 100, { bold: true });
+//       doc.moveTo(50, 120).lineTo(550, 120).stroke();
+//       let y = 130;
+
+//       // Add orders data
+//       orders.forEach(order => {
+//           if (y > 750) { // Check for page overflow
+//               doc.addPage();
+//               y = 50;
+//           }
+
+//           doc.fillColor('#000000');
+//           doc.text(order.orderId, 50, y);
+//           doc.text(order.userId.name, 100, y);
+//           doc.text(order.createdAt.toISOString().split('T')[0], 200, y);
+//           doc.text(`Rs ${order.totalAmount}`, 300, y);
+//           doc.text(order.orderStatus, 400, y);
+
+//           // List products
+//           let productsText = order.products.map(product => `${product.productId.name} `).join(', ');
+//           doc.text(productsText, 500, y, { width: 200 });
+
+//           y += 20;
+
+//           if (order.shippingAddress) {
+//               const address = order.shippingAddress;
+//               doc.text(`Address: ${address.name}, ${address.street}, ${address.city}, ${address.state}, ${address.country}`, { indent: 50, width: 500 });
+//               doc.text(`Pincode: ${address.pincode}`, { indent: 50, width: 500 });
+//               doc.text(`Mobile No: ${address.mobile}`, { indent: 50, width: 500 });
+//               y += 40;
+//           }
+//       });
+
+//       // Add Footer
+//       doc.moveTo(50, 750).lineTo(550, 750).stroke();
+//       doc.fontSize(10).text('Generated by Ecommerce System', 50, 760, { align: 'center' });
+
+//       // Finalize the PDF and end the stream
+//       doc.end();
+
+//   } catch (error) {
+//       console.error('Error generating PDF:', error);
+//       res.status(500).send('Internal Server Error');
+//   }
+// };
 
 const loadCoupon = async(req, res) => {
   try {
@@ -1496,7 +1767,140 @@ const loadCreateCoupon= async (req,res)=>{
   }
 
 
+  const loadStatics=async(req,res)=>{
+    try {
+  
+  
+      const bestProduct = await order.aggregate([
+        { $unwind: '$products' },
+        { 
+            $group: {
+                _id: '$products.productId',
+                totalQuantity: { $sum: '$products.quantity' },
+                totalSales: { $sum:  '$products.price' }
+            }
+        },
+        { $sort: { totalQuantity: -1 } },
+        { $limit: 10 },
+        {
+            $lookup: {
+                from: 'products',
+                localField: '_id',
+                foreignField: '_id',
+                as: 'productDetails'
+            }
+        },
+        { $unwind: '$productDetails' },
+        {
+            $project: {
+                _id: 1,
+                totalQuantity: 1,
+                totalSales: 1,
+                'productDetails.name': 1,
+                'productDetails.promoprice': 1,
+                'productDetails.images': 1
+            }
+        }
+    ]);
+    // console.log("orders",orders);
+  
+  
+  
+//     const bestCategory = await Order.aggregate([
+//       { $unwind: '$products' },
+//       {
+//           $lookup: {
+//               from: 'products',
+//               localField: 'products.productId',
+//               foreignField: '_id',
+//               as: 'productDetails'
+//           }
+//       },
+//       { $unwind: '$productDetails' },
+//       {
+//           $group: {
+//               _id: '$productDetails.category',
+//               totalQuantity: { $sum: '$products.quantity' },
+//               totalSales: { $sum: { $multiply: ['$products.quantity', '$products.price'] } }
+//           }
+//       },
+//       { $sort: { totalQuantity: -1 } },
+//       { $limit: 10 },
+//       {
+//           $lookup: {
+//               from: 'Category',
+//               localField: '_id',
+//               foreignField: '_id',
+//               as: 'categoryDetails'
+//           }
+//       },
+//       { $unwind: '$categoryDetails' },
+//       {
+//           $project: {
+//               _id: 1,
+//               totalQuantity: 1,
+//               totalSales: 1,
+//               'categoryDetails.name': 1,
+//               'categoryDetails.description': 1
+//           }
+//       }
+//   ]);
+const bestCategory = await order.aggregate([
+    { $unwind: '$products' },
+    {
+      $lookup: {
+        from: 'products',
+        localField: 'products.productId',
+        foreignField: '_id',
+        as: 'productDetails'
+      }
+    },
+    { $unwind: '$productDetails' },
+    {
+      $group: {
+        _id: '$productDetails.category',
+        totalQuantity: { $sum: '$products.quantity' },
+        totalSales: { $sum: '$products.price' }
+      }
+    },
+    { $sort: { totalQuantity: -1 } },
+    { $limit: 10 },
+    {
+      $lookup: {
+        from: 'categories',
+        localField: '_id',
+        foreignField: '_id',
+        as: 'categoryDetails'
+      }
+    },
+    { $unwind: '$categoryDetails' },
+    {
+      $project: {
+        _id: 1,
+        totalQuantity: 1,
+        totalSales: 1,
+        'categoryDetails.maincatagory': 1,
+        // 'categoryDetails.description': 1
+      }
+    }
+  ]);
+  
+//   console.log(bestCategory);
+  
 
+  console.log("best produvt ",bestProduct);
+  console.log("best category ",bestCategory,"============");
+  
+//   res.status(200).json({success:true});
+  
+  
+      res.render('salesreport',{product:bestProduct,category:bestCategory})
+      
+    } catch (error) {
+      
+      console.log("error form admincontroller loadStatics",error);
+    }
+  }
 
 
 
@@ -1541,6 +1945,8 @@ module.exports = {
   statusChange,
   orderCancel,
   getOrdersGraphData,
-  pdfDownloadOrders
+  pdfDownloadOrders,
+  excelDownloadOrders,
+  loadStatics
   
 };

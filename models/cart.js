@@ -27,11 +27,32 @@ const cartSchema=new mongoose.Schema({
             required:true
         }
     }],
+    coupon:{
+        code:{
+          type: String,
+          default : ''
+        },
+        discount:{
+          type: Number,
+          default : 0
+        }
+      },
+      wallet:{
+        type: Number,
+        default : 0
+      },
     total:{
         type:Number
-    }
+    },
+    charges:{
+        type: Number,
+      }
     
 })
+cartSchema.pre('save', function (next) {
+    this.charges = this.total > 1000 ? 65 : 0;
+    next();
+  });
 
 const collection= mongoose.model('Cart',cartSchema)
 

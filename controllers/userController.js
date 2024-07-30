@@ -249,6 +249,7 @@ const loginLoad= async  (req,res)=>{
 
         
     } catch (error) {
+        res.status(500).json({success:false,message:"Something went wrong"})
         console.log(error.message);
         
     }
@@ -400,28 +401,28 @@ const loadHome= async(req,res)=>{
       console.log(totalPages,"total pagess===========");
 // ini ivide enthokkeyoo cheyyaan ind
         // const userData=await req.session?req.session.user.username:passport.newUser
+        
         // Apply offers
         for (let product of products) {
-            let categoryOffer = await Offer.findOne({ category: product.category, isActive: true });
-            let productOffer = await Offer.findOne({ product: product._id, isActive: true });
 
-            let productDiscountedPrice = product.promoprice;
-            let categoryDiscountedPrice = product.promoprice;
+        // Find active offers
+        const categoryOffer = await Offer.findOne({ category: product.category._id, isActive: true });
+        const productOffer = await Offer.findOne({ product: product._id, isActive: true });
 
-            if (productOffer) {
-                productDiscountedPrice = product.promoprice - (product.promoprice * productOffer.Discount / 100);
-            }
+                
+        // Calculate discounted prices
+        let discountedPrice = product.promoprice;
 
-            if (categoryOffer) {
-                categoryDiscountedPrice = product.promoprice - (product.promoprice * categoryOffer.Discount / 100);
-            }
+        if (productOffer) {
+        discountedPrice = product.promoprice - (product.promoprice * productOffer.Discount / 100);
+        }
 
-            // Check if any offer is applied
-            if (productOffer || categoryOffer) {
-                product.discountedPrice = Math.min(productDiscountedPrice, categoryDiscountedPrice);
-            } else {
-                product.discountedPrice = product.promoprice; // No offer, show promo price
-            }
+        if (categoryOffer) {
+        const categoryDiscountedPrice = product.promoprice - (product.promoprice * categoryOffer.Discount / 100);
+        discountedPrice = Math.min(discountedPrice, categoryDiscountedPrice);
+        }
+
+        product.discountedPrice = discountedPrice;
         }
         // ====================================
         if(req.user){
@@ -594,6 +595,23 @@ const detailLoad=async (req,res)=>{
 
     console.log("==============detail load details====================");
     console.log(product,totalcount);
+        // Find active offers
+        const categoryOffer = await Offer.findOne({ category: product.category._id, isActive: true });
+        const productOffer = await Offer.findOne({ product: product._id, isActive: true });
+    
+        // Calculate discounted prices
+        let discountedPrice = product.promoprice;
+    
+        if (productOffer) {
+          discountedPrice = product.promoprice - (product.promoprice * productOffer.Discount / 100);
+        }
+    
+        if (categoryOffer) {
+          const categoryDiscountedPrice = product.promoprice - (product.promoprice * categoryOffer.Discount / 100);
+          discountedPrice = Math.min(discountedPrice, categoryDiscountedPrice);
+        }
+    
+        product.discountedPrice = discountedPrice;
     
       if(product){
         // console.log(product,totalcount,"if in details");
@@ -747,7 +765,7 @@ const LoadProfile=async(req,res)=>{
              id=await User.findById({_id:req.session.passport.user._id})
     
             }
-        const orders= await order.find({userId:id})
+        const orders= await order.find({userId:id}).sort({createdAt: -1})
         const ad=await Address.findOne({userId:id})
         if(ad?.address){
             console.log(ad.address);

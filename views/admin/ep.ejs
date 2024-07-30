@@ -17,6 +17,9 @@
     <link href="/admin/assets/css/main.css" rel="stylesheet" type="text/css" />
     <link  href="https://cdn.jsdelivr.net/npm/cropperjs@1.5.13/dist/cropper.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/cropperjs@1.5.13/dist/cropper.min.js"></script>
+    <!-- SweetAlert2 CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.8/dist/sweetalert2.min.css">
+   
 </head>
 
 <body class="dark">
@@ -81,16 +84,16 @@
                         <a href="page-form-product-4.html">Add product 4</a>
                     </div> -->
                 </li>
-                <li class="menu-item">
+                <!-- <li class="menu-item">
                     <a class="menu-link" href="#"> <i class="icon material-icons md-monetization_on"></i>
                         <span class="text">Transactions</span>
-                    </a>
+                    </a> -->
                     <!-- <div class="submenu">
                         <a href="page-transactions-1.html">Transaction 1</a>
                         <a href="page-transactions-2.html">Transaction 2</a>
                         <a href="page-transactions-details.html">Transaction Details</a>
                     </div> -->
-                </li>
+                <!-- </li> -->
                 <li class="menu-item">
                     <a class="menu-link" href="/admin/category"> <i class="icon material-icons md-person"></i>
                         <span class="text">Catagory</span>
@@ -115,28 +118,28 @@
                     </a>
                   </li>
                 <li class="menu-item">
-                    <a class="menu-link" disabled href="#"> <i class="icon material-icons md-pie_chart"></i>
+                    <a class="menu-link" disabled href="/admin/statistics"> <i class="icon material-icons md-pie_chart"></i>
                         <span class="text">Statistics</span>
                     </a>
                 </li>
             </ul>
             <hr>
-            <ul class="menu-aside">
+            <!-- <ul class="menu-aside">
                 <li class="menu-item">
                     <a class="menu-link" href="#"> <i class="icon material-icons md-settings"></i>
                         <span class="text">Settings</span>
-                    </a>
+                    </a> -->
                     <!-- <div class="submenu">
                         <a href="page-settings-1.html">Setting sample 1</a>
                         <a href="page-settings-2.html">Setting sample 2</a>
                     </div> -->
-                </li>
+                <!-- </li>
                 <li class="menu-item">
                     <a class="menu-link" href="page-blank.html"> <i class="icon material-icons md-local_offer"></i>
                         <span class="text"> Starter page </span>
                     </a>
                 </li>
-            </ul>
+            </ul> -->
             <br>
             <br>
         </nav>
@@ -200,7 +203,7 @@
             <div class="row">
                 <div class="col-9">
                     <div class="content-header">
-                        <h2 class="content-title">Add New Product</h2>
+                        <h2 class="content-title">Edit Product</h2>
                         <!-- <div>
                             <button class="btn btn-light rounded font-sm mr-5 text-body hover-up">Save to draft</button>
                             <button class="btn btn-md rounded font-sm hover-up">Publich</button>
@@ -210,7 +213,7 @@
                 <div class="col-lg-6">
                     <div class="card mb-4">
                         <div class="card-header">
-                            <h4>Edit product</h4>
+                            <h4>Edit product details here</h4>
                         </div>
                         <div class="card-body">
                             <!-- <form> -->
@@ -222,16 +225,22 @@
                                     <input type="hidden" id="id" name="id" value="<%= data._id %>"> 
 
                                     <label for="name"  class="form-label">Product Name:</label>
-                                    <input class="form-control" type="text" id="name" name="name" value="<%= data.name %>" required>
+                                    <div id="name-error" class="text-danger"></div>
+
+                                    <input class="form-control" type="text" id="name" name="name"  value="<%= data.name %>"   onfocusout="validateProductName()">
                             
                                     <label for="description" class="form-label">Description:</label>
-                                    <input class="form-control" id="description" name="description" value="<%= data.description %>" required></input>
+                                    <div id="description-error" class="text-danger"></div>
+                                
+                                    <input class="form-control" id="description" name="description" value="<%= data.description %>"  onfocusout="validateDescription()"></input>
                             
                                     <label class="form-label" for="price" class="form-label">Price:</label>
-                                    <input class="form-control" type="number" id="price" name="price" step="0.01" min=1 value="<%= data.price %>" required>
+                                    <div id="price-error" class="text-danger"></div>
+                                    <input class="form-control" type="number" id="price" name="price" step="0.01" min=1 value="<%= data.price %>"  onfocusout="validatePrice()">
                             
                                     <label class="form-label" for="promoprice">Promo Price:</label>
-                                    <input class="form-control" type="number" id="promoprice" name="promoprice" step="0.01" min=1 value="<%= data.promoprice %>" required>
+                                    <div id="promoprice-error" class="text-danger"></div>
+                                    <input class="form-control" type="number" id="promoprice" name="promoprice" step="0.01" min=1 value="<%= data.promoprice %>" onfocusout="validatePromoPrice()">
                                     <label class="form-label" for="category">Category:</label>
                                     <select id="category" name="category" required>
                                         <% categories.forEach(category => { %> 
@@ -487,17 +496,79 @@
         let price=document.getElementById('price').value
         let promoprice=document.getElementById('promoprice').value
         let category=document.getElementById('category').value
-        if(name.length===0){
-            alert("Enter valid name")
-            return false;
+        function validateProductName(){
+            const productname = document.getElementById('name').value.trim()
+            const errorDiv = document.getElementById('name-error')
+
+            if(productname.length === 0){
+                errorDiv.textContent = 'Please enter product name';
+                return false;
+            } else {
+                errorDiv.textContent = '';
+                return true;
+            }
         }
-        if(price<1 || promoprice<1){
-            alert('Price and promoprice must be greater than zero.');
-            return false
+
+        function validateDescription(){
+            const description = document.getElementById('description').value
+            const errorDiv = document.getElementById('description-error')
+
+            if(description.length == ''){
+                errorDiv.textContent = 'Please enter the description of the product.';
+                return false;
+            } else {
+                errorDiv.textContent = '';
+                return true;
+            }
         }
-        if(promoprice>price){
-            alert('Promoprice must be less than or equal to price')
-            return false
+
+        function validatePrice(){
+            const price = document.getElementById('price').value
+            const errorDiv = document.getElementById('price-error')
+
+            if(price.length == ''){
+                errorDiv.textContent = 'Please enter the price.';
+                return false;
+            } else if(price < 1){
+                errorDiv.textContent = 'Price must be positive value.'
+                return false;
+            
+            } else {
+                errorDiv.textContent = '';
+                return true;
+            }
+        }
+
+
+        function validatePromoPrice(){
+            const promoprice = document.getElementById('promoprice').value
+            const price = document.getElementById('price').value
+            const errorDiv = document.getElementById('promoprice-error')
+
+
+            if(promoprice.length == ''){
+                errorDiv.textContent = 'Please enter the promo-price.';
+                return false;
+            } else if(promoprice < 1){
+                errorDiv.textContent = 'Amount must be positive value.'
+                return false;
+            } else if(Number(promoprice) > Number(price)){
+                errorDiv.textContent = 'Promoprice should be less than or equal to price.'
+                return false;
+            } else {
+                errorDiv.textContent = '';
+                return true;
+            }
+        }
+
+        function validateForm(){
+            const isProductnameValid = validateProductName();
+            const isDescriptionValid = validateDescription();
+            const isPriceValid = validatePrice();
+            const isPromoPriceValid = validatePromoPrice();
+            
+            
+            return isProductnameValid && isDescriptionValid && isPromoPriceValid && isPriceValid;
         }
         const sizeElements = document.querySelectorAll('input[name^="sizes"]'); 
               const sizes = [];
@@ -507,7 +578,7 @@
                   const stock = parseInt(input.value, 10) || 0; // Default to 0 if not a valid number
                   sizes.push({ size, stock }); // Push a {size, stock} object to the array
               });
-        if (true) {
+        if (validateForm()) {
           const formData = new FormData(document.querySelector('form')); // Create FormData from form
           formData.append('id', id); // Append the product ID to the form data
           formData.append('sizes', JSON.stringify(sizes));
@@ -521,7 +592,15 @@
             if (response.ok) {
                 const data = await response.json(); 
                 if(data.updated){
+                   const success=await Swal.fire(
+                    'Updated!',
+                    'Product details updated successfully',
+                    'success'
+                );
+                if(success.isConfirmed){
                     location.reload();
+                }
+                
                 }else{
                     alert(data.error)
                 }
@@ -538,6 +617,10 @@
         return false; // Prevent the default form submission
       }
       </script>
+
+      <!-- SweetAlert2 JavaScript -->
+      <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.8/dist/sweetalert2.min.js"></script>
+          
     <script src="/admin/assets/js/vendors/jquery-3.6.0.min.js"></script>
     <script src="/admin/assets/js/vendors/bootstrap.bundle.min.js"></script>
     <script src="/admin/assets/js/vendors/select2.min.js"></script>

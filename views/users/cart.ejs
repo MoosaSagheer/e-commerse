@@ -786,7 +786,7 @@
                                             <p class="font-xs"><%= cart.productId.description %><br> <%= cart.productId.category.name %></p>
                                         </td>
                                         <td id="size<%=index%>" class="size" data-title="size"><span><%=cart.size%></span></td>
-                                        <td class="price" data-title="Price"><span>₹<%= cart.productId.promoprice %> </span></td>
+                                        <td class="price" data-title="Price"><span>₹<%= cart.price/cart.quantity %> </span></td>
                                         <td class="text-center" data-title="Quantity">
                                             <!-- ==========================edited here========================= -->
                                             <input type="hidden" name="productIds[]" value="<%= cart.productId._id %>">
@@ -924,7 +924,7 @@
                                                 </tr>
                                                 <tr>
                                                     <td class="cart_total_label">Shipping</td>
-                                                    <td class="cart_total_amount"> <i class="ti-gift mr-5"></i> Free Shipping</td>
+                                                    <td class="cart_total_amount"> <i class="ti-gift mr-5"></i> <%=cart.charges%></td>
                                                 </tr>
                                                 <tr>
                                                     <td class="cart_total_label">Total</td>
@@ -1203,7 +1203,11 @@ function updateCartTotalPrice() {
     const priceText = item.textContent.replace('₹', ''); // Remove ₹ symbol before parsing
     total += parseFloat(priceText) || 0; // Handle cases where priceText might not be a valid number
   });
-  cartTotalAmountInput.value = `₹${total.toFixed(2)}`; 
+  let charges = 0
+  if(total>1000){
+    charges = 65
+  }
+  cartTotalAmountInput.value = `₹${total + charges}`; 
   cartTotalAmount.textContent = total.toFixed(2); // Update the other span element as well
 }
 

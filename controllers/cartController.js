@@ -1,6 +1,7 @@
 const Cart= require('../models/cart')
 const Product=require('../models/products')
 const User=require('../models/usermodel')
+const Offer = require('../models/offerModel')
 
 
 
@@ -23,7 +24,7 @@ let subtotal
     let totalprice=0;
   
      userData.products.forEach(pro => {
-        subtotal=pro.quantity*pro.productId.promoprice
+        subtotal=pro.price
         
         console.log(`subtotal ${pro.productId.name} = ${subtotal}`);       
      
@@ -215,8 +216,31 @@ const AddtoCart=async(req,res) => {
         const userId=req.session.user._id
         console.log("user",userId);
         const product = await Product.findById(productId)
+        // ========
+        // Apply offers
+
+            // Find active offers
+            const categoryOffer = await Offer.findOne({ category: product.category._id, isActive: true });
+            const productOffer = await Offer.findOne({ product: product._id, isActive: true });
+    
+                    
+            // Calculate discounted prices
+            let discountedPrice = product.promoprice;
+    
+            if (productOffer) {
+            discountedPrice = product.promoprice - (product.promoprice * productOffer.Discount / 100);
+            }
+    
+            if (categoryOffer) {
+            const categoryDiscountedPrice = product.promoprice - (product.promoprice * categoryOffer.Discount / 100);
+            discountedPrice = Math.min(discountedPrice, categoryDiscountedPrice);
+            }
+    
+            product.discountedPrice = discountedPrice;
+            
+        // ========
        let cart = await Cart.findOne({userId:userId})
-        const totalprice=parseInt(product.promoprice*qty)
+        const totalprice=parseInt(product.discountedPrice*qty)
         if(!cart){
             console.log("new cart");
             // let cartTotal = cart.products.reduce((total, product) => total + product.price, 0);
@@ -360,16 +384,19 @@ const ChangeQuantity=async(req,res)=>{
             const quantities=req.body.quantities
             let updated=null;
             if(quantities.length>0){
+                
             quantities.forEach((quantity, index) => {
                 if (quantity > 0) {
+                  const price =  cart.products[index].price/cart.products[index].quantity
                   cart.products[index].quantity = quantity;
+                  cart.products[index].price = price * quantity
                 }
             })
             
             cart.total = cart.products.reduce((sum, product) => {
-                product.price=product.quantity * product.productId.promoprice
-                console.log(product.quantity, product.productId.promoprice);
-                return sum + product.quantity * product.productId.promoprice;
+                product.price
+                // console.log(product.quantity, product.productId.promoprice);
+                return sum + product.price;
               }, 0);
           
               // Save the updated cart

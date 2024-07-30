@@ -205,14 +205,14 @@
                     <div class="col-xl-3 col-lg-4">
                         <div class="header-info header-info-right">
                             <ul>
-                                <li>
+                                <!-- <li>
                                     <a class="language-dropdown-active" href="#"> <i class="fi-rs-world"></i> English <i class="fi-rs-angle-small-down"></i></a>
                                     <ul class="language-dropdown">
                                         <li><a href="#"><img src="/users/assets/imgs/theme/flag-fr.png" alt="">Français</a></li>
                                         <li><a href="#"><img src="/users/assets/imgs/theme/flag-dt.png" alt="">Deutsch</a></li>
                                         <li><a href="#"><img src="/users/assets/imgs/theme/flag-ru.png" alt="">Pусский</a></li>
                                     </ul>
-                                </li>
+                                </li> -->
                                 <% if (user) { %>
                                   <li><p>Welcome <br><%=user %> </p> </li> 
                                   <li><a href="/logout">Logout</a></li>
@@ -235,9 +235,9 @@
                     <div class="header-right">
                         <div class="search-style-2">
                             <form action="#">
-                                <label for="filter">Filter By:</label>
+                                <!-- <label for="filter">Filter By:</label> -->
                                 <select name="filter" class="select active" onchange="this.form.submit();">
-                                    <option value="">Category</option>
+                                    <option value="">Filter Category</option>
                                     <% categories.forEach(category => { %> 
                                         <!-- <option value="<%= category._id %>"><%= category.maincatagory %></option> -->
                                         <option value="<%= category._id %>" <% if (filter == category._id) { %>selected<% } %>>
@@ -257,13 +257,13 @@
                                 <div class="header-action-icon-2">
                                     <a href="/wishlist">
                                         <img class="svgInject" alt="Tato" src="/users/assets/imgs/theme/icons/icon-heart.svg">
-                                        <span class="pro-count blue">4</span>
+                                        <!-- <span class="pro-count blue"></span> -->
                                     </a>
                                 </div>
                                 <div class="header-action-icon-2">
                                     <a class="mini-cart-icon" href="/product/cart">
                                         <img alt="Tato" src="/users/assets/imgs/theme/icons/icon-cart.svg">
-                                        <span class="pro-count blue">2</span>
+                                        <!-- <span class="pro-count blue"></span> -->
                                     </a>
                                     <div class="cart-dropdown-wrap cart-dropdown-hm2">
                                         <ul>
@@ -316,11 +316,11 @@
                         <a href="/home"><img src="/users/assets/imgs/theme/logo.svg" alt="logo"></a>
                     </div>
                     <div class="header-nav d-none d-lg-flex">
-                        <div class="main-categori-wrap d-none d-lg-block">
-                            <a class="categori-button-active" href="#">
+                        <!-- <div class="main-categori-wrap d-none d-lg-block"> -->
+                            <!-- <a class="categori-button-active" href="#">
                                 <span class="fi-rs-apps"></span> Browse Categories
-                            </a>
-                            <div class="categori-dropdown-wrap categori-dropdown-active-large">
+                            </a> -->
+                            <!-- <div class="categori-dropdown-wrap categori-dropdown-active-large">
                                 <ul>
                                     <li class="has-children">
                                         <a href="shop-grid-right.html"><i class="Tato-font-dress"></i>Women's Clothing</a>
@@ -355,7 +355,7 @@
                                                             </ul>
                                                         </li>
                                                     </ul>
-                                                </li>
+                                                </li> -->
                                                 <!-- <li class="mega-menu-col col-lg-5">
                                                     <div class="header-banner2">
                                                         <img src="/users/assets/imgs/banner/menu-banner-2.jpg" alt="menu_banner1">
@@ -374,7 +374,7 @@
                                                         </div>
                                                     </div>
                                                 </li> -->
-                                            </ul>
+                                            <!-- </ul>
                                         </div>
                                     </li>
                                     <li class="has-children">
@@ -429,7 +429,7 @@
                                             <ul class="mega-menu d-lg-flex">
                                                 <li class="mega-menu-col col-lg-7">
                                                     <ul class="d-lg-flex">
-                                                        <li class="mega-menu-col col-lg-6">
+                                                        <li class="mega-menu-col col-lg-6"> -->
                                                             <!-- <ul>
                                                                 <li><span class="submenu-title">Hot & Trending</span></li>
                                                                 <li><a class="dropdown-item nav-link nav_item" href="#">Cellphones</a></li>
@@ -441,8 +441,8 @@
                                                                 <li><a class="dropdown-item nav-link nav_item" href="#">Communication Equipments</a></li>
                                                                 <li><a class="dropdown-item nav-link nav_item" href="#">Walkie Talkie</a></li>
                                                             </ul> -->
-                                                        </li>
-                                                        <li class="mega-menu-col col-lg-6">
+                                                        <!-- </li>
+                                                        <li class="mega-menu-col col-lg-6"> -->
                                                             <!-- <ul>
                                                                 <li><span class="submenu-title">Accessories</span></li>
                                                                 <li><a class="dropdown-item nav-link nav_item" href="#">Screen Protectors</a></li>
@@ -454,9 +454,9 @@
                                                                 <li><a class="dropdown-item nav-link nav_item" href="#">Dust Plug</a></li>
                                                                 <li><a class="dropdown-item nav-link nav_item" href="#">Signal Boosters</a></li>
                                                             </ul> -->
-                                                        </li>
+                                                        <!-- </li>
                                                     </ul>
-                                                </li>
+                                                </li> -->
                                                 <!-- <li class="mega-menu-col col-lg-5">
                                                     <div class="header-banner2">
                                                         <img src="/users/assets/imgs/banner/menu-banner-5.jpg" alt="menu_banner1">
@@ -475,7 +475,7 @@
                                                         </div>
                                                     </div>
                                                 </li> -->
-                                            </ul>
+                                            <!-- </ul>
                                         </div>
                                     </li>
                                     <li><a href="shop-grid-right.html"><i class="Tato-font-desktop"></i>Computer & Office</a></li>
@@ -496,7 +496,7 @@
                                 </ul>
                                 <div class="more_categories">Show more...</div>
                             </div>
-                        </div>
+                        </div> -->
                         <div class="main-menu main-menu-padding-1 main-menu-lh-2 d-none d-lg-block">
                             <nav>
                                 <ul>
@@ -508,9 +508,9 @@
                                             <li><a href="index-4.html">Home 4</a></li>
                                         </ul> -->
                                     </li>
-                                    <li>
-                                        <a href="page-about.html">About</a>
-                                    </li>
+                                    <!-- <li> -->
+                                        <!-- <a href="page-about.html">About</a> -->
+                                    <!-- </li> -->
                                     <!-- <li><a href="shop-grid-right.html">Shop <i class="fi-rs-angle-down"></i></a>
                                         <ul class="sub-menu">
                                             <li><a href="shop-grid-right.html">Shop Grid – Right Sidebar</a></li>
@@ -837,14 +837,14 @@
                                     <li><a href="/error">404 Page</a></li>
                                 </ul>
                             </li>
-                            <li><span></span><a href="#">Language</a>
+                            <!-- <li><span></span><a href="#">Language</a>
                                 <ul class="dropdown">
                                     <li><a href="#">English</a></li>
                                     <li><a href="#">French</a></li>
                                     <li><a href="#">German</a></li>
                                     <li><a href="#">Spanish</a></li>
                                 </ul>
-                            </li>
+                            </li> -->
                         </ul>
                     </nav>
                     <!-- mobile menu end -->
@@ -1037,11 +1037,8 @@
                                 </div> -->
                                 <div class="product-price">
                                     <span>₹<%= product.discountedPrice %></span>
-                                    <% if (product.discountedPrice < product.price) { %>
                                     <span class="old-price">₹<%= product.price %></span>
-                                    <% } else { %>
-                                    <span>₹<%= product.promoprice %></span>
-                                    <% } %>
+                                    
                                 </div>
                                 <!-- ============= -->
                                 <div class="product-action-1 show">

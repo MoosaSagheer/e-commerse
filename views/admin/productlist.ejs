@@ -106,7 +106,7 @@
                     </div> -->
                 </li>
                 <li class="menu-item ">
-                    <a class="menu-link" href="category"> <i class="icon material-icons md-monetization_on"></i>
+                    <a class="menu-link" href="/admin/category"> <i class="icon material-icons md-monetization_on"></i>
                         <span class="text">Categories</span>
                     </a>
                     <!-- <div class="submenu">
@@ -133,7 +133,7 @@
                         <span class="text">Brands</span> </a>
                 </li> -->
                 <li class="menu-item">
-                    <a class="menu-link" disabled href="#"> <i class="icon material-icons md-pie_chart"></i>
+                    <a class="menu-link" disabled href="/admin/statistics"> <i class="icon material-icons md-pie_chart"></i>
                         <span class="text">Statistics</span>
                     </a>
                 </li>
@@ -271,7 +271,7 @@
                                     <img src="/uploads/<%= data.images && data.images.length > 0? data.images[0] : 'default-images.jpg' %>" class="card-img-top" alt="<%= data.name %>">
                                     <div class="card-body">
                                         <h5 class="card-title"><%= data.name %></h5>
-                                        <p class="card-text">Price: $<%= data.promoprice %></p>
+                                        <p class="card-text">Price: ₹ <%= data.promoprice %></p>
                                         <p class="card-text">Category: <%= data.category.maincatagory %></p>
                                         <p class="card-text">
                                             Total Stock: 

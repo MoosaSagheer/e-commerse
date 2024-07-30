@@ -1,0 +1,214 @@
+<!DOCTYPE HTML>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Evara Dashboard</title>
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta property="og:title" content="">
+    <meta property="og:type" content="">
+    <meta property="og:url" content="">
+    <meta property="og:image" content="">
+    <!-- Favicon -->
+    <link rel="shortcut icon" type="image/x-icon" href="/users/assets/imgs/theme/favicon.svg">
+    <!-- Template CSS -->
+    <link href="/users/assets/css/main.css" rel="stylesheet" type="text/css" />
+</head>
+
+<body>
+    <main class="container" >
+        <section class="content-main" >
+            <div class="content-header">
+                <div>
+                    <h2 class="content-title card-title">Invoice</h2>
+                    <p>Details for Order ID: <span ><%= order.orderId%></span></p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12 col-md-8">
+                    <div class="card">
+                        <header class="card-header">
+                            <div class="row align-items-center">
+                                <div class="col-lg-6 col-md-6 mb-lg-0 mb-15">
+                                    <span>
+                                        <!-- <span class="material-symbols-outlined">calendar_today</span> <b th:text="${date}">Wed, Aug 13, 2022, 4:34PM</b> -->
+                                    </span> <br>
+                                    <small class="text-muted">Order ID: <span ><%= order.orderId%></span></small>
+                                </div>
+                                <div class="col-lg-6 col-md-6 ms-auto text-md-end">                                   
+                                    <a class="btn btn-primary pb-15" id="download-btn">
+                                        <span class="material-symbols-outlined"></span>
+                                        Download PDF</a>
+                                </div>
+                            </div>
+                        </header> <!-- card-header end// -->
+                        <% if(order) {%>
+
+                        <div class="card-body" id="invoice">
+                            <div class="receipt-content">
+                                <div class="container bootstrap snippets bootdey">
+                                    <div class="row pb-50">
+                                        <div class="col-md-12">
+                                            <div class="invoice-wrapper">
+                                                <div class="intro">
+                                                    Hi <strong ><%=order.userId.name %></strong>,
+                                                    <br>
+                                                    This is the receipt for a payment of <strong >Rs <%= order.totalAmount %> </strong> (INR) for your order
+                                                </div>
+                    
+                                                <div class="payment-info">
+                                                    <div class="row">
+                                                        <div class="col-sm-6">
+                                                            <span>Payment Method : </span>
+                                                            <strong ><%=order.payment_method.method %></strong>
+                                                        </div>
+                                                        <div class="col-sm-6 text-end">
+                                                            <span>Payment Date</span>
+                                                            <strong ><%= order.createdAt.toLocaleDateString('en-US', { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' }) %></strong>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                    
+                                                <div class="payment-details">
+                                                    <div class="row">
+                                                        <div class="col-sm-6">
+                                                            <span>Delivery Address : </span>
+                                                        
+                                                            <strong ><%= address.name %>
+                                                            </strong>
+                                                            <p><%= address.street %>,</p>
+                                                            <p > <%= address.city %></p>
+                                                            <p ><%= address.state %>, <%= address.country %></p>
+                                                            <p > <%= address.pincode %>- </p>
+                                                                <a href="#"">
+                                                                    <%= order.userId.email%>
+                                                                </a>
+                                                            </p>
+                                                            
+                                                        </div>
+                                                        <div class="col-sm-6 text-end">
+                                                            <span>Payment To</span>
+                                                            <strong>
+                                                                Tato Pvt.Ltd
+                                                            </strong>
+                                                            <p>
+                                                                23, HAL Old Airport Rd <br>
+                                                                Kodihalli,560008 <br>
+                                                                Bengaluru <br>
+                                                                Karnataka,India <br>
+                                                                <a href="#">
+                                                                    Tato@gmail.com
+                                                                </a>
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                    
+                                                <div class="line-items">
+                                                    <div class="headers clearfix">
+                                                        <div class="row">
+                                                            <div class="col-md-4">Product Name</div>
+                                                            <div class="col-md-3">Quantity</div>
+                                                            <div class="col-md-5 text-end">Amount</div>
+                                                        </div>
+                                                    </div>
+                                                    <%order.products.forEach(product =>{%>
+                                                    <div class="items" >
+                                                        <div class="row item" >
+                                                            <div class="col-md-4 desc" >
+                                                                <%=product.productId.name%>
+                                                            </div>
+                                                            <div class="col-md-3 qty" >
+                                                                <%= product.quantity %>
+                                                            </div>
+                                                            <div class="col-md-5 amount text-end" >
+                                                                ₹  <%= product.price %>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <%})%>
+                                                    <div class="total text-end">
+                                                        <div class="field">
+                                                            Subtotal: <span >₹ <%= order.totalAmount - order.charges %></span>
+                                                        </div>
+                                                        <div class="field">
+                                                            Shipping: <span id="shippingPrice">₹ <%= order.charges %></span>
+                                                        </div>
+                                                        <div class="field">
+                                                            Discount:
+                                                            <% if (order.coupon ) {%>
+                                                                <!-- <input type="number" id="discountOffer" value="" > -->
+                                                             <span id="discount">
+                                                                ₹ <%= order.coupon.discount %>
+
+                                                            </span>
+                                                            <%}else {%>
+                                                                <span>0</span>
+                                                                <%}%>
+                                                        </div>
+                                                        <div class="field grand-total">
+                                                            Total: <span id="totalPrice" >₹ <%= order.totalAmount - order.coupon.discount  %></span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div> <!-- card-body end// -->
+                        <%}%>
+                    </div> <!-- card end// -->
+                </div>
+            </div>
+        </section> <!-- content-main end// -->
+    </main>
+
+
+    <script src="/users/assets/js/vendors/jquery-3.6.0.min.js"></script>
+    <script src="/users/assets/js/vendors/bootstrap.bundle.min.js"></script>
+    <script src="/users/assets/js/vendors/select2.min.js"></script>
+    <script src="/users/assets/js/vendors/perfect-scrollbar.js"></script>
+    <script src="/users/assets/js/vendors/jquery.fullscreen.min.js"></script>
+      <!-- Include html2canvas library -->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+      <!-- Include jsPDF library -->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
+
+    
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            document.getElementById('download-btn').addEventListener('click', async function () {
+                const { jsPDF } = window.jspdf;
+
+                // Reference to the HTML content to be converted to PDF
+                const invoiceContent = document.querySelector('.card-body');
+
+                // Use html2canvas to capture the content
+                const canvas = await html2canvas(invoiceContent, { scale: 2 });
+
+                // Create a new jsPDF instance
+                const pdf = new jsPDF('p', 'mm', 'a4');
+                const imgData = canvas.toDataURL('image/png');
+                const imgProps = pdf.getImageProperties(imgData);
+                const pdfWidth = pdf.internal.pageSize.getWidth();
+                const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+
+                // Add the captured image to the PDF
+                pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+
+                // Save the generated PDF
+                pdf.save('invoice.pdf');
+            });
+        });
+
+    </script>
+
+
+</body>
+
+</html>
