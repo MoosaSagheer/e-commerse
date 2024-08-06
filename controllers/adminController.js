@@ -9,7 +9,6 @@ const order = require('../models/order')
 const address= require('../models/address')
 const Coupon = require('../models/couponModel')
 const PDFDocument = require('pdfkit');
-const sharp=require('sharp')
 const path = require('path')
 const xlsx = require('xlsx');
 
