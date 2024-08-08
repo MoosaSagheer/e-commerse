@@ -8,7 +8,7 @@ mongoose.connect('mongodb://127.0.0.1:27017/user')
 
 const express=require('express')
 const app= express()
-const PORT=3000
+const PORT=4000
 // const session=require('express-session')
 // const config=require('./config/config.js')
 const passport = require('./middleware/passport');

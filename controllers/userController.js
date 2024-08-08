@@ -5,7 +5,7 @@ const Category= require('../models/category')
 const crypto = require('crypto');
 const Offer = require('../models/offerModel')
 
-const bcrypt=require('bcrypt')
+const bcrypt=require('bcryptjs')
 const auth=require('../middleware/auth')
 const passport=require('../middleware/passport')
 

@@ -126,9 +126,9 @@ user_route.get('/auth/google/callback',
 
 user_route.get('/edit',auth.isLogin,user_Controller.editLoad)
 user_route.post('/edit',user_Controller.updateProfile)
-// user_route.get('*',function(req,res){
-//     res.redirect('/error')
-// })
+ user_route.get('*',function(req,res){
+     res.redirect('/')
+ })
 
 
 
