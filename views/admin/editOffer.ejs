@@ -318,7 +318,7 @@ th {
   
        function validate_offerpercentage()
        {
-        var Percentage= document.getElementById('Percentage').value
+        var Percentage= document.getElementById('percentage').value
      
   
   
@@ -328,7 +328,12 @@ th {
           document.getElementById('error-percentage').innerHTML="plese enter the percentage"
   return false
         }else if (isNaN(Percentage) ){
-          document.getElementById('error-percentage').innerHTML="please eneter the valide percentage"
+          document.getElementById('error-percentage').innerHTML="please eneter the valid percentage"
+  return false
+  
+  
+        }else if (Number(Percentage)>100 ){
+          document.getElementById('error-percentage').innerHTML="please eneter the  percentage below 100"
   return false
   
   

@@ -210,7 +210,7 @@ th {
 
                             <div class="mb-4">
                                 <label  class="form-label">Choose Product</label>
-                                <select id="productSelect" name="product"  onselect="return vlaidate_offerProduct()" class="form-select">
+                                <select id="productSelect" name="product"  onselect="return validateOfferProduct()" class="form-select">
                                    
                                     <% if(product) {%>
                                       <option  value=""> select</option>
@@ -238,7 +238,7 @@ th {
                             </div>
                             <div class="mb-4">
                                 <label  class="form-label">Offer Percentage</label>
-                                <input type="text" id="Percentage" name="offerPercentage"  oninput="return vlaidate_offerProduct()"  class="form-control"/>
+                                <input type="text" id="Percentage" name="offerPercentage"  oninput="return validate_offerpercentage()"  class="form-control"/>
                                 <div id="error-percentage" class="text-danger"></div>
                             <div class="mb-4">
                                 <label  class="form-label">Offer Type</label>
@@ -257,7 +257,6 @@ th {
 
 </main>
 
-<div </div>
 
 <script>
     // function validateForm() {
@@ -397,6 +396,11 @@ th {
   return false
   
   
+        }else if (Number(Percentage)>100 ){
+          document.getElementById('error-percentage').innerHTML="please eneter the  percentage below 100"
+  return false
+  
+  
         }
         else
         {
@@ -406,9 +410,10 @@ th {
        }
        function validateForm() {
        
-     
+       console.log(validateOfferProduct() && validate_offerName() && validate_offerdescription() && validate_offerpercentage())
+
       
-       return validateOfferProduct()&& validate_offerName()&&validate_offerdescription()&&validate_offerpercentage()
+       return validateOfferProduct() && validate_offerName() && validate_offerdescription() && validate_offerpercentage()
   
   
           

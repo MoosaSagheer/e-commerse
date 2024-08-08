@@ -61,7 +61,7 @@
     </div><br>
     <div class="mb-4">
       <label class="form-label" for="startDate">Start Date (optional):</label>
-      <input class="form-control" type="date" name="startDate" id="startDate">
+      <input class="form-control" type="date" name="startDate" min="<%= new Date().toISOString().split('T')[0] %>" id="startDate">
     </div><br>
     <div class="mb-4">
       <label class="form-label" for="endDate">End Date (optional):</label>
@@ -109,7 +109,19 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
 
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+  const startDateInput = document.getElementById('startDate');
+  const endDateInput = document.getElementById('endDate');
 
+  startDateInput.addEventListener('change', () => {
+    const selectedStartDate = new Date(startDateInput.value);
+    selectedStartDate.setDate(selectedStartDate.getDate() + 1);
+    endDateInput.min = selectedStartDate.toISOString().split('T')[0];
+  });
+});
+
+</script>
   <script>
     function validate_couponCode() {
       const couponCode = document.getElementById('code').value;
@@ -130,6 +142,7 @@
     }
 
     function validate_discountValue() {
+      const selectedType = discountType.value;
       const discountValue = parseFloat(document.getElementById('discountValue').value);
       const errorDiv = document.getElementById('discountValue-error');
       
@@ -141,8 +154,20 @@
         errorDiv.textContent = 'Invalid discount value. It must be a number greater than or equal to 0.';
         return false;
       }
-
-      return true;
+      console.log(selectedType,'selectedType');
+      
+      if(selectedType === 'fixedAmount'  && discountValue > 0){
+        return true
+      }else if(selectedType === 'fixedAmount'  && discountValue < 0){
+      errorDiv.textContent = 'Invalid discount value. It must be a number greater than 0';
+      return false;
+      }
+      else if(selectedType === 'percentage' && discountValue <=50 && discountValue > 0){
+        return true
+      }else if(selectedType === 'percentage' && discountValue >50 || discountValue < 0){
+      errorDiv.textContent = 'Invalid discount value. It must be a number between 1 and 50';
+      return false;
+      }
     }
 
     function validateForm() {
@@ -183,7 +208,7 @@
         swal.fire({
           icon: 'Error',
           title: 'Oops!',
-          text: 'This coupon is already exists.',
+          text: 'Error occured while adding coupon',
           showConfirmButton: true
         });
         }
